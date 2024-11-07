@@ -1,0 +1,54 @@
+rules:
+  - id: unsafe_unpacking
+    languages:
+      - javascript
+    severity: ERROR
+    message: Unsafe Zip Unpacking 
+    patterns:
+        - patterns: 
+            - pattern-either: 
+                - pattern-inside: |
+                    $ADMZIP = require('adm-zip')
+                    ...
+                - pattern-inside: |
+                    import $ADMZIP from 'adm-zip'
+                    ...
+
+            - pattern-inside: |
+                $ZIP = new $ADMZIP($FILENAME)
+                ...
+        - pattern-either:
+            # Basic write
+            - pattern: $ZIP.extractAllTo($OUTPUT, ...)
+
+            # Loop cases
+            - patterns:
+            
+              - pattern-either: 
+                  - pattern-inside: |
+                      $ENTRIES = $ZIP.getEntries()
+                      ...
+                      $ENTRIES.forEach(...)
+                  - pattern-inside: |
+                      $ZIP.getEntries().forEach(...)
+                  - pattern-inside: |
+                      $ENTRIES = $ZIP.getEntries()
+                      ...
+                      for ($ENTRY of $ENTRIES) (...)
+                  - pattern-inside: |
+                      for ($ENTRY of $ZIP.getEntries()) (...)
+
+
+              - pattern-either:
+                  - patterns:
+                      - pattern: $FS.createWriteStream(<... $ENTRY.entryName ...>);
+
+                  - patterns:
+                      - pattern: $FS.createWriteStream($PATH)
+
+                      - pattern-either:
+                          - pattern-inside: |
+                              $PATH = path.join(..., $ENTRY.entryName)
+                              ...
+                          - pattern-inside: |
+                              $PATH = <... $ENTRY.entryName ...>

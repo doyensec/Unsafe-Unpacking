@@ -1,0 +1,14 @@
+rules:
+  - id: unsafe_unpacking
+    languages:
+      - python
+    severity: ERROR
+    message: Unsafe Shutil Unpacking 
+    patterns:
+      - pattern-either: 
+          - pattern: shutil.unpack_archive(...)
+
+      - pattern-not: shutil.unpack_archive(..., format='zip', ...)
+      - pattern-inside: |
+          import shutil
+          ...

@@ -1,0 +1,64 @@
+rules:
+  - id: unsafe_unpacking
+    languages:
+      - php
+    severity: ERROR
+    message: Unsafe Zip Unpacking 
+    patterns:
+        - patterns:
+            - pattern-inside: |
+                  $ZIP = new ZipArchive;
+                  ...
+            - pattern-either:
+                - pattern-inside: |
+                      $ZIP->open($FILE);
+                      ...
+
+                - pattern-inside: |
+                      for ($INITIAL; <... $ZIP ...>; $DO) { ... }
+                - pattern-inside: |
+                      while (<... $ZIP ...>) { ... }
+
+        - pattern-either:
+            - pattern-either:
+                - pattern: copy(..., <... $ZIP ...>)
+
+            - patterns:
+                - pattern-either:
+                    - pattern: copy(..., <... $PATH ...>)
+                    - pattern: file_put_contents($PATH, ...)
+
+                - pattern-either:
+                    - pattern-inside: |
+                        $PATH = <... $ZIP->getNameIndex($I) ...>;
+                        ...
+              
+                    - pattern-inside: |
+                        $ENTRY = <... $ZIP->getNameIndex($I) ...>;
+                        ...
+                        $PATH = <... $ENTRY ...>;
+                        ...
+
+            - patterns:
+                - pattern-either:
+                    - pattern: stream_copy_to_stream(..., $DESTSTREAM)
+                    - pattern: fwrite($DESTREAM, ...)
+                    - pattern: file_put_contents($DESTREAM, ...)
+
+                - pattern-either:
+                    - pattern-inside: |
+                        $DESTSTREAM = fopen(<... $PATH ...>, ...);
+                        ...
+
+                - pattern-either:
+                    - pattern-inside: |
+                        $PATH = <... $ZIP->getNameIndex($I) ...>;
+                        ...
+              
+                    - pattern-inside: |
+                        $ENTRY = <... $ZIP->getNameIndex($I) ...>;
+                        ...
+                        $PATH = <... $ENTRY ...>;
+                        ...
+
+

@@ -1,0 +1,75 @@
+rules:
+  - id: unsafe_unpacking
+    languages:
+      - java
+    severity: ERROR
+    message: Unsafe Tar Unpacking 
+    patterns:
+        - patterns: 
+            - pattern-either: 
+                - pattern-inside: |
+                    import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+                    ...
+            - pattern-either:
+                - pattern-inside: |
+                    try(TarArchiveInputStream $TAR = new TarArchiveInputStream(...)) {
+                      ...
+                    }
+
+        - pattern-either:
+            # Loop cases
+            - patterns:
+            
+              - pattern-either: 
+                  - pattern-inside: |
+                      ArchiveEntry $ENTRY;
+                      ...
+                  - pattern-inside: |
+                      ArchiveEntry $ENTRY = ...;
+                      ...
+                  - pattern-inside: |
+                      $TAR.entries().asIterator().forEachRemaining(...)
+
+
+              - pattern-either:
+                  - pattern-either:
+                      - pattern: new FileOutputStream(<... $ENTRY.getName() ...>)
+                      - pattern: new java.io.FileOutputStream(<... $ENTRY.getName() ...>)
+                      #- pattern: new File(..., <... $ENTRY.getName() ...>)
+
+
+                  - patterns:
+                      - pattern-either: 
+                          - pattern: new FileOutputStream($PATH)
+                          - pattern: new java.io.FileOutputStream($PATH)
+                          - pattern: new File(..., $PATH)
+                          - pattern: Files.copy(..., $PATH, ...)
+                          - pattern: Files.newOutputStream($PATH)
+
+                      - pattern-either:
+                          - pattern-inside: |
+                              String $PATH = <... $ENTRY.getName() ...>;
+                              ...
+                          - pattern-inside: |
+                              File $PATH = new File(..., <... $ENTRY.getName() ...>);
+                              ...
+                          - pattern-inside: |
+                              String $ENTRYNAME = <... $ENTRY.getName() ...>;
+                              ...
+                              File $PATH = new File(..., $ENTRYNAME);
+                              ...
+                          - pattern-inside: |
+                              Path $PATH = $DEST.resolve(entry.getName());
+                              ...
+                          - pattern-inside: |
+                              Path $PATH = Paths.get(entry.getName());
+                              ...
+                          - pattern-inside: |
+                              Path $PATH = Paths.get(new URI(<... entry.getName() ...>));
+                              ...
+                          - pattern-inside: |
+                              Path $PATH = Paths.get(..., entry.getName());
+                              ...
+                          - pattern-inside: |
+                              Path $PATH = Paths.get(..., new URI(<... entry.getName() ...>));
+                              ...

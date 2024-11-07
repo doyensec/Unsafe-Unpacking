@@ -1,0 +1,8 @@
+rules:
+  - id: unsafe_unpacking
+    languages:
+      - swift
+    severity: ERROR
+    message: Unsafe unpacking method
+    pattern-either:
+      - pattern: Zip.unzipFile(..., ..., ..., ...)

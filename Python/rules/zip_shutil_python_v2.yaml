@@ -1,0 +1,58 @@
+rules:
+  - id: unsafe_unpacking
+    languages:
+      - python
+    severity: ERROR
+    message: Unsafe Zip Unpacking 
+    patterns:
+      - pattern-either: 
+          #- pattern: $FD.extractall(...)
+          - pattern: shutil.unpack_archive(...)
+          - pattern: shutil.copyfileobj($SOURCE, $DESTINATION)
+
+      - pattern-inside: |
+          import zipfile
+          ...
+      
+      - pattern-either: 
+          - pattern-inside: |
+              with zipfile.ZipFile($FILE, ...) as $FD:
+                ...
+          - pattern-inside: |
+              $FD = zipfile.ZipFile($FILE, ...)
+              ...
+
+      - pattern-either: 
+          - pattern-inside: |
+              $FILELIST = $FD.namelist()
+              ...
+              for $FILENAME in $FILELIST:
+                ...
+          - pattern-inside: |
+              for $FILENAME in $FD.namelist():
+                ...
+
+      - pattern-either:
+          #- pattern-inside: |
+          #    with $FD.open($FILENAME) as $SOURCE:
+          #      ...
+          - pattern-inside: |
+              with open($FILENAME, ...) as $DESTINATION:
+                ...
+          #- pattern-inside: |
+          #    $SOURCE = $FD.open($FILENAME)
+          #    ...
+          - pattern-inside: |
+              $DESTINATION = open($FILENAME, ...)
+              ...
+
+          - pattern-inside: |
+              $DESTINATION_PATH = os.path.join(..., $FILENAME)
+              ...
+              with open($DESTINATION_PATH, ...) as $DESTINATION:
+                ...
+          - pattern-inside: |
+              $DESTINATION_PATH = os.path.join(..., $FILENAME)
+              ...
+              $DESTINATION = open($DESTINATION_PATH, ...)
+              ...

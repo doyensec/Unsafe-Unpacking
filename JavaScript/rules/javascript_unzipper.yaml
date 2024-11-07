@@ -1,0 +1,60 @@
+rules:
+  - id: unsafe_unpacking
+    languages:
+      - javascript
+    severity: ERROR
+    message: Unsafe Zip Unpacking 
+    patterns:
+        - patterns: 
+            - pattern-either: 
+                - pattern-inside: |
+                    $UNZIPPER = require('unzipper')
+                    ...
+                - pattern-inside: |
+                    import $UNZIPPER from 'unzipper'
+                    ...
+            - pattern-either:
+                - pattern-inside: |
+                    $ZIP = $UNZIPPER.Parse()
+                    ...
+                    $ZIP.on('entry', entry => {
+                      ...
+                    })
+                - pattern-inside: |
+                    $FS.createReadStream($FILENAME).pipe($UNZIPPER.Parse()).on('entry', $ENTRY => {
+                      ...
+                    })
+                - pattern-inside: |
+                    $UNZIPPER.Parse($FILE).on('entry', $ENTRY => {
+                      ...
+                    })
+
+        - pattern-either:
+              - pattern-either:
+                    - pattern: $FS.writeFileSync(<... $ENTRY.path ...>, ...)
+                    - patterns: 
+                        - pattern-inside: |
+                            entry.pipe(...)
+                        - pattern: $FS.createWriteStream(<... $ENTRY.path ...>)
+                    - pattern: $FS.createWriteStream(<... $ENTRY.path ...>)
+
+              - patterns:
+                  - pattern-either:
+                      - pattern: $FS.writeFileSync($PATH, ...)
+                      - patterns: 
+                          - pattern-inside: |
+                              entry.pipe(...)
+                          - pattern: $FS.createWriteStream(<... $PATH ...>)
+                      - pattern: $FS.createWriteStream(<... $ENTRY.path ...>)
+                  - pattern-not-inside: |
+                      $PATH = path.join(..., path.basename($ENTRY.path))
+                      ...
+                  - pattern-either:
+                      - pattern-inside: |
+                          $PATH = path.join(..., $ENTRY.path)
+                          ...
+                      - pattern-inside: |
+                          $PATH = <... $ENTRY.path ...>
+                          ...
+
+              

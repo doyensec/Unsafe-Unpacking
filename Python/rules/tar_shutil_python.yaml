@@ -1,0 +1,61 @@
+rules:
+  - id: unsafe_unpacking
+    languages:
+      - python
+    severity: ERROR
+    message: Unsafe Tar Unpacking 
+    patterns:
+      - pattern-either: 
+          #- pattern: $FD.extractall(...)
+          - pattern: shutil.unpack_archive(...)
+          - pattern: shutil.copyfileobj($SOURCE, $DESTINATION)
+
+      - pattern-inside: |
+          import tarfile
+          ...
+      
+      - pattern-either: 
+          - pattern-inside: |
+              with tarfile.open($FILE, ...) as $FD:
+                ...
+          - pattern-inside: |
+              $FD = tarfile.open($FILE, ...)
+              ...
+
+      - pattern-either: 
+          - pattern-inside: |
+              $FILELIST = $FD.getmembers()
+              ...
+              for $FILENAME in $FILELIST:
+                ...
+          - pattern-inside: |
+              for $FILENAME in $FD.getmembers():
+                ...
+
+      - pattern-either:
+          #- pattern-inside: |
+          #    with $FD.open($FILENAME) as $SOURCE:
+          #      ...
+          - pattern-inside: |
+              with open($FILENAME.name, ...) as $DESTINATION:
+                ...
+          #- pattern-inside: |
+          #    $SOURCE = $FD.open($FILENAME)
+          #    ...
+          - pattern-inside: |
+              $DESTINATION = open($FILENAME.name, ...)
+              ...
+
+          - pattern-inside: |
+              $DESTINATION_PATH = os.path.join($DESTINATION, $FILENAME.name)
+              ...
+              with open($DESTINATION_PATH, ...) as $DESTINATION:
+                ...
+          - pattern-inside: |
+              $DESTINATION_PATH = os.path.join($DESTINATION, $FILENAME.name)
+              ...
+              $DESTINATION = open($DESTINATION_PATH, ...)
+              ...
+          - pattern-inside: |
+              $DESTINATION_PATH = os.path.join($DESTINATION, $FILENAME.name)
+              ...

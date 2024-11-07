@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Unsafe Unpacking Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            font-family: 'Helvetica Neue', sans-serif;
+        }
+        h1 {
+            font-weight: 700;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+        }
+        .box {
+            border: 5px solid #000;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px;
+            flex: 1 1 30%;
+            max-width: 180px;
+            height: 160px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            transition: border-color 0.3s;
+        }
+        button {
+            padding: 5px 10px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .small-button {
+            padding: 5px 10px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        pre {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            width: 80%;
+            white-space: pre-wrap;
+        }
+        .response {
+            font-size: 12px;
+            background-color: #f0f0f0;
+            padding: 5px;
+            border-radius: 3px;
+            margin: 5px 0;
+            width: 100%;
+            text-align: center;
+        }
+        #directoryContents {
+            margin-top: 20px;
+            width: 80%;
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Python Unsafe Unpacking Lab</h1>
+    <div class="container">
+        <div class="box" id="unsafe_shutil">
+            <p class="response" id="response_unsafe_shutil"></p>
+            <span>Unsafe shutil</span>
+            <button onclick="handleButtonClick('unsafe_shutil', 1)">RUN</button>
+            <button onclick="handleShowSourceClick('unsafe_shutil', 1)">Show Source</button>
+        </div>
+        <div class="box" id="safe_shutil">
+            <p class="response" id="response_safe_shutil"></p>
+            <span>Safe shutil</span>
+            <button onclick="handleButtonClick('safe_shutil', 2)">RUN</button>
+            <button onclick="handleShowSourceClick('safe_shutil', 2)">Show Source</button>
+        </div>
+        <div class="box" id="unsafe_tar">
+            <p class="response" id="response_unsafe_tar"></p>
+            <span>Unsafe Tar</span>
+            <button onclick="handleButtonClick('unsafe_tar', 3)">RUN</button>
+            <button onclick="handleShowSourceClick('unsafe_tar', 3)">Show Source</button>
+        </div>
+        <div class="box" id="safe_tar">
+            <p class="response" id="response_safe_tar"></p>
+            <span>Safe Tar</span>
+            <button onclick="handleButtonClick('safe_tar', 4)">RUN</button>
+            <button onclick="handleShowSourceClick('safe_tar', 4)">Show Source</button>
+        </div>
+        <div class="box" id="unsafe_zip">
+            <p class="response" id="response_unsafe_zip"></p>
+            <span>Unsafe Zip</span>
+            <button onclick="handleButtonClick('unsafe_zip', 5)">RUN</button>
+            <button onclick="handleShowSourceClick('unsafe_zip', 5)">Show Source</button>
+        </div>
+        <div class="box" id="safe_zip">
+            <p class="response" id="response_safe_zip"></p>
+            <span>Safe Zip</span>
+            <button onclick="handleButtonClick('safe_zip', 6)">RUN</button>
+            <button onclick="handleShowSourceClick('safe_zip', 6)">Show Source</button>
+        </div>
+    </div>
+
+    <button class="small-button" onclick="clearDirectory()">Clear TXT Files</button>
+    
+    <pre id="codeDisplay"></pre> <!-- Area to display code -->
+    <button class="small-button" onclick="fetchDirectoryContents()">Fetch Directory Contents</button>
+    <pre id="directoryContents"></pre> <!-- Area to display directory contents -->
+
+    <script>
+        function clearDirectory() {
+            fetch('/clear_directory')
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);  // Show success message
+                    fetchDirectoryContents();  // Optionally refresh the displayed contents
+                })
+                .catch(error => console.error('Error clearing directory:', error));
+        }
+
+
+        function changeBoxBorderColor(code) {
+            const boxes = document.querySelectorAll('.box');
+            boxes.forEach(box => {
+                box.style.borderColor = '#000'; // Default black color
+            });
+            const box = document.getElementById(code);
+            box.style.borderColor = '#FFA500'; // Orange color
+        }
+
+        function fetchBoxData(code) {
+            fetch(`/run_${code}`)
+                .then(response => response.json())
+                .then(data => {
+                    const responseElement = document.getElementById(`response_${code}`);
+                    responseElement.innerText = data.message;
+                    changeBoxBorderColor(code);
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        function fetchSourceData(code, boxNumber) {
+            fetch(`/source_${boxNumber}`)
+                .then(response => response.json())
+                .then(data => {
+                    const codeDisplay = document.getElementById('codeDisplay');
+                    codeDisplay.innerText = data.code;
+                    changeBoxBorderColor(code);
+                })
+                .catch(error => console.error('Error fetching source data:', error));
+        }
+
+        function handleButtonClick(code, boxNumber) {
+            fetchBoxData(code);
+            handleShowSourceClick(code, boxNumber);
+        }
+
+        function handleShowSourceClick(code, boxNumber) {
+            fetchSourceData(code, boxNumber);
+        }
+
+        function fetchDirectoryContents() {
+            fetch('/directory')
+                .then(response => response.json())
+                .then(data => {
+                    const directoryContentsElement = document.getElementById('directoryContents');
+                    const currentFiles = data.current_txt_files.length > 0 ? data.current_txt_files.join('\n') : 'No TXT files found.';
+                    const archiveFiles = data.archive_txt_files.length > 0 ? data.archive_txt_files.join('\n') : 'No TXT files found.';
+
+                    directoryContentsElement.innerText = `Current Directory:\n${currentFiles}\n\nArchive Directory:\n${archiveFiles}`;
+                })
+                .catch(error => console.error('Error fetching directory contents:', error));
+        }
+
+    </script>
+</body>
+</html>

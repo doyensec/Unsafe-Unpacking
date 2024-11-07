@@ -1,0 +1,84 @@
+rules:
+  - id: unsafe_tar_unpacking
+    languages:
+      - ruby
+    severity: ERROR
+    message: Unsafe Tar Unpacking 
+    patterns:
+      - pattern-either:
+        - pattern-inside: |
+            Gem::Package::TarReader.new($FILE).each do |$ENTRY|
+            ...
+            end
+        - pattern-inside: |
+            $TAR = Gem::Package::TarReader.new(...)
+            ...
+            $TAR.each do |$ENTRY|
+              ...
+            end
+        - pattern-inside: |
+            $TAR = Gem::Package::TarReader.new(...)
+            ...
+            $TAR.each_entry do |$ENTRY|
+              ...
+            end
+        - pattern-inside: |
+            $TAR = Gem::Package::TarReader.new(...)
+            ...
+            $TAR.seek(...) do |$ENTRY|
+              ...
+            end
+      
+      - pattern-either:
+        - patterns:
+          - metavariable-regex:
+              metavariable: $MODE
+              regex: (.*[wa].*)
+              
+          - pattern-either: 
+            - pattern: File.open(<... $ENTRY.full_name ...>, $MODE)
+            - pattern: ::File.open(<... $ENTRY.full_name ...>, $MODE)
+
+        - patterns:
+          - pattern-not-inside: |
+              unless $PATH.start_with?(...)
+                ...
+              end
+              ...
+
+          - pattern-either: 
+            - pattern: File.open(<... $PATH ...>, $MODE)
+            - pattern: ::File.open(<... $PATH ...>, $MODE)
+
+          - pattern-either: 
+
+            - pattern-inside: |
+                $PATH = File.join(..., <... $ENTRY.full_name ...>)
+                ...
+            - pattern-inside: |
+                $PATH = File.join(<... $ENTRY.full_name ...>, ...)
+                ...
+            - pattern-inside: |
+                $PATH = File.expand_path(<... $ENTRY.full_name ...>, ...)
+                ...
+            - pattern-inside: |
+                $PATH = File.expand_path(..., <... $ENTRY.full_name ...>)
+                ...
+
+            - patterns:
+              - pattern-either:
+                - pattern-inside: |
+                    $NAME = <... $ENTRY.full_name ...>
+                    ...
+                    $PATH = File.join(..., $NAME)
+                    ...
+                - pattern-inside: |
+                    $NAME = <... $ENTRY.full_name ...>
+                    ...
+                    $PATH = File.expand_path($NAME, ...)
+                    ...
+                - pattern-inside: |
+                    $NAME = <... $ENTRY.full_name ...>
+                    ...
+                    $PATH = File.expand_path(..., $NAME)
+                    ...

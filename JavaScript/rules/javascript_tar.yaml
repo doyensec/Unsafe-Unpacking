@@ -1,0 +1,52 @@
+rules:
+  - id: unsafe_unpacking
+    languages:
+      - javascript
+    severity: ERROR
+    message: Unsafe Tar Unpacking 
+    patterns:
+        - patterns: 
+            - pattern-either: 
+                - pattern-inside: |
+                    $TARSTREAM = require('tar-stream')
+                    ...
+                - pattern-inside: |
+                    import $TARSTREAM from 'tar-stream'
+                    ...
+            - pattern-either:
+                - pattern-inside: |
+                    $TAR = $TARSTREAM.extract()
+                    ...
+                    $TAR.on('entry', ($ENTRY, $STREAM, ...) => {
+                        ...
+                    })
+
+        - pattern-either:
+              - pattern-either:
+                    - pattern: $FS.writeFileSync(<... $ENTRY.name ...>, ...)
+                    - patterns: 
+                        - pattern-inside: |
+                            $STREAM.pipe(...)
+                        - pattern: $FS.createWriteStream(<... $ENTRY.name ...>)
+                    - pattern: $FS.createWriteStream(<... $PATH ...>)
+              - patterns:
+                  - pattern-either:
+                        - pattern: $FS.writeFileSync($PATH, ...)
+                        - patterns: 
+                            - pattern-inside: |
+                                $STREAM.pipe(...)
+                            - pattern: $FS.createWriteStream(<... $PATH ...>)
+                        - pattern: $FS.createWriteStream(<... $PATH ...>)
+                  - pattern-not-inside: |
+                      $PATH = path.join(..., path.basename($ENTRY.name))
+                      ...
+
+                  - pattern-either:
+                      - pattern-inside: |
+                          $PATH = path.join(..., $ENTRY.name)
+                          ...
+                      - pattern-inside: |
+                          $PATH = <... $ENTRY.name ...>
+                          ...
+
+              
