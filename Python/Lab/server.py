@@ -204,7 +204,7 @@ def source5():
 
 @app.route('/run_safe_zip')
 def safe_zip():
-    safe_unzip(os.path.join(payloads_dir, "payload.zip"))
+    safe_unzip(os.path.join(payloads_dir, "payload.zip"), archive_dir)
     response_data = {"message": "unpacked"}
     return jsonify(response_data)
 

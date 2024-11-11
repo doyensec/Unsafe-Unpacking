@@ -40,7 +40,7 @@ def unsafe_unzip(file_name, output):
             with zf.open(filename) as source, open(output_path, 'wb') as destination:
                 shutil.copyfileobj(source, destination)
 
-def safe_unzip(file_name):
+def safe_unzip(file_name, output):
     # good
     with zipfile.ZipFile(file_name, 'r') as zip_ref:
-        zip_ref.extractall()
+        zip_ref.extractall(output)
