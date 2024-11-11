@@ -23,7 +23,7 @@ public class UnzipTesting {
 
         String zipFilePath = "Java/poc/payloads/payload.zip";
         String destDir = "Java/poc/archives"; // Replace with your output directory
-        unsafe_unzip(zipFilePath, destDir);
+        unsafe_unzip6(zipFilePath, destDir);
     }
 
     public static void unsafe_unzip(String file_name, String output) {
@@ -142,6 +142,31 @@ public class UnzipTesting {
                             in.transferTo(out);
                         }
                     }
+                }catch (IOException e){
+
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void unsafe_unzip6(String file_name, String output) {
+        File destDir = new File(output);
+        try (ZipFile zipFile = new ZipFile(new File(file_name))) {
+            zipFile.entries().asIterator().forEachRemaining(entry -> {
+                try{
+                    Path destPath = Paths.get(output).resolve(entry.getName()).normalize();
+                    if (!destPath.startsWith(destDir.toPath())) {
+                        System.err.println("Skipping unsafe entry: " + entry.getName());
+                        return; 
+                    }
+
+                    try (InputStream in = zipFile.getInputStream(entry);
+                            OutputStream out = Files.newOutputStream(destPath)) {
+                        in.transferTo(out);
+                    }
+                    
                 }catch (IOException e){
 
                 }

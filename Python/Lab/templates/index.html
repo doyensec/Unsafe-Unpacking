@@ -30,19 +30,22 @@
             padding: 20px;
             margin: 10px;
             flex: 1 1 30%;
-            max-width: 180px;
-            height: 160px;
+            max-width: 220px;
+            min-height: 220px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
             font-size: 18px;
             transition: border-color 0.3s;
+            box-sizing: border-box;
         }
         button {
             padding: 5px 10px;
             font-size: 14px;
             margin-top: 10px;
+            width: 100%; /* For file input buttons to stretch */
+            cursor: pointer;
         }
         .small-button {
             padding: 5px 10px;
@@ -52,6 +55,8 @@
             border-radius: 5px;
             cursor: pointer;
             margin-top: 20px;
+            /* Remove full width for these buttons */
+            width: auto; /* Keep their natural size */
         }
         pre {
             background-color: #e9ecef;
@@ -77,6 +82,23 @@
             padding: 10px;
             border-radius: 5px;
         }
+
+        /* Styling for the file input to center and fit neatly */
+        input[type="file"] {
+            width: 100%;
+            margin-top: 10px;
+            padding: 8px 10px;
+            font-size: 14px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        input[type="file"]:focus {
+            outline: none;
+            border: 1px solid #007bff;
+        }
+
     </style>
 </head>
 <body>
@@ -85,36 +107,42 @@
         <div class="box" id="unsafe_shutil">
             <p class="response" id="response_unsafe_shutil"></p>
             <span>Unsafe shutil</span>
+            <input type="file" id="file_unsafe_shutil">
             <button onclick="handleButtonClick('unsafe_shutil', 1)">RUN</button>
             <button onclick="handleShowSourceClick('unsafe_shutil', 1)">Show Source</button>
         </div>
         <div class="box" id="safe_shutil">
             <p class="response" id="response_safe_shutil"></p>
             <span>Safe shutil</span>
+            <input type="file" id="file_safe_shutil">
             <button onclick="handleButtonClick('safe_shutil', 2)">RUN</button>
             <button onclick="handleShowSourceClick('safe_shutil', 2)">Show Source</button>
         </div>
         <div class="box" id="unsafe_tar">
             <p class="response" id="response_unsafe_tar"></p>
             <span>Unsafe Tar</span>
+            <input type="file" id="file_unsafe_tar">
             <button onclick="handleButtonClick('unsafe_tar', 3)">RUN</button>
             <button onclick="handleShowSourceClick('unsafe_tar', 3)">Show Source</button>
         </div>
         <div class="box" id="safe_tar">
             <p class="response" id="response_safe_tar"></p>
             <span>Safe Tar</span>
+            <input type="file" id="file_safe_tar">
             <button onclick="handleButtonClick('safe_tar', 4)">RUN</button>
             <button onclick="handleShowSourceClick('safe_tar', 4)">Show Source</button>
         </div>
         <div class="box" id="unsafe_zip">
             <p class="response" id="response_unsafe_zip"></p>
             <span>Unsafe Zip</span>
+            <input type="file" id="file_unsafe_zip">
             <button onclick="handleButtonClick('unsafe_zip', 5)">RUN</button>
             <button onclick="handleShowSourceClick('unsafe_zip', 5)">Show Source</button>
         </div>
         <div class="box" id="safe_zip">
             <p class="response" id="response_safe_zip"></p>
             <span>Safe Zip</span>
+            <input type="file" id="file_safe_zip">
             <button onclick="handleButtonClick('safe_zip', 6)">RUN</button>
             <button onclick="handleShowSourceClick('safe_zip', 6)">Show Source</button>
         </div>
@@ -136,7 +164,6 @@
                 })
                 .catch(error => console.error('Error clearing directory:', error));
         }
-
 
         function changeBoxBorderColor(code) {
             const boxes = document.querySelectorAll('.box');
@@ -170,7 +197,25 @@
         }
 
         function handleButtonClick(code, boxNumber) {
-            fetchBoxData(code);
+            const fileInput = document.getElementById(`file_${code}`);
+            const file = fileInput.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append('file', file);
+                fetch(`/upload_${boxNumber}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const responseElement = document.getElementById(`response_${code}`);
+                    responseElement.innerText = data.message;
+                    changeBoxBorderColor(code);
+                })
+                .catch(error => console.error('Error uploading file:', error));
+            } else {
+                fetchBoxData(code);
+            }
             handleShowSourceClick(code, boxNumber);
         }
 
@@ -190,7 +235,6 @@
                 })
                 .catch(error => console.error('Error fetching directory contents:', error));
         }
-
     </script>
 </body>
 </html>

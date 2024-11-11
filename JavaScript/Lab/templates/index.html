@@ -29,20 +29,23 @@
             border-radius: 10px;
             padding: 20px;
             margin: 10px;
-            flex: 1 1 40%; /* Increased width */
-            max-width: 250px; /* Increased max-width */
-            height: 220px; /* Increased height */
+            flex: 1 1 30%;
+            max-width: 220px;
+            min-height: 220px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
             font-size: 18px;
             transition: border-color 0.3s;
+            box-sizing: border-box;
         }
         button {
             padding: 5px 10px;
             font-size: 14px;
             margin-top: 10px;
+            width: 100%; /* For file input buttons to stretch */
+            cursor: pointer;
         }
         .small-button {
             padding: 5px 10px;
@@ -52,6 +55,8 @@
             border-radius: 5px;
             cursor: pointer;
             margin-top: 20px;
+            /* Remove full width for these buttons */
+            width: auto; /* Keep their natural size */
         }
         pre {
             background-color: #e9ecef;
@@ -77,6 +82,23 @@
             padding: 10px;
             border-radius: 5px;
         }
+
+        /* Styling for the file input to center and fit neatly */
+        input[type="file"] {
+            width: 100%;
+            margin-top: 10px;
+            padding: 8px 10px;
+            font-size: 14px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        input[type="file"]:focus {
+            outline: none;
+            border: 1px solid #007bff;
+        }
+
     </style>
     
 </head>
@@ -86,64 +108,75 @@
         <div class="box" id="unsafe_adm_zip">
             <p class="response" id="response_unsafe_adm_zip"></p>
             <span>Unsafe adm-zip</span>
+            <input type="file" id="file_unsafe_adm_zip">
             <button onclick="handleButtonClick('unsafe_adm_zip', 1)">RUN</button>
             <button onclick="handleShowSourceClick('unsafe_adm_zip', 1)">Show Source</button>
         </div>
         <div class="box" id="safe_adm_zip">
             <p class="response" id="response_safe_adm_zip"></p>
             <span>Safe adm-zip</span>
+            <input type="file" id="file_safe_adm_zip">
             <button onclick="handleButtonClick('safe_adm_zip', 2)">RUN</button>
             <button onclick="handleShowSourceClick('safe_adm_zip', 2)">Show Source</button>
         </div>
         <div class="box" id="unsafe_unzipper">
             <p class="response" id="response_unsafe_unzipper"></p>
             <span>Unsafe unzipper</span>
+            <input type="file" id="file_unsafe_unzipper">
             <button onclick="handleButtonClick('unsafe_unzipper', 3)">RUN</button>
             <button onclick="handleShowSourceClick('unsafe_unzipper', 3)">Show Source</button>
         </div>
         <div class="box" id="safe_unzipper">
             <p class="response" id="response_safe_unzipper"></p>
             <span>Safe unzipper</span>
+            <input type="file" id="file_safe_unzipper">
             <button onclick="handleButtonClick('safe_unzipper', 4)">RUN</button>
             <button onclick="handleShowSourceClick('safe_unzipper', 4)">Show Source</button>
         </div>
         <div class="box" id="unsafe_node_zip">
             <p class="response" id="response_unsafe_node_zip"></p>
             <span>Unsafe node-zip</span>
+            <input type="file" id="file_unsafe_node_zip">
             <button onclick="handleButtonClick('unsafe_node_zip', 5)">RUN</button>
             <button onclick="handleShowSourceClick('unsafe_node_zip', 5)">Show Source</button>
         </div>
         <div class="box" id="safe_node_zip">
             <p class="response" id="response_safe_node_zip"></p>
             <span>Safe node-zip</span>
+            <input type="file" id="file_safe_node_zip">
             <button onclick="handleButtonClick('safe_node_zip', 6)">RUN</button>
             <button onclick="handleShowSourceClick('safe_node_zip', 6)">Show Source</button>
         </div>
         <div class="box" id="unsafe_unzip">
             <p class="response" id="response_unsafe_unzip"></p>
             <span>Unsafe unzip</span>
+            <input type="file" id="file_unsafe_unzip">
             <button onclick="handleButtonClick('unsafe_unzip', 7)">RUN</button>
             <button onclick="handleShowSourceClick('unsafe_unzip', 7)">Show Source</button>
         </div>
         <div class="box" id="safe_unzip">
             <p class="response" id="response_safe_unzip"></p>
             <span>Safe unzip</span>
+            <input type="file" id="file_safe_unzip">
             <button onclick="handleButtonClick('safe_unzip', 8)">RUN</button>
             <button onclick="handleShowSourceClick('safe_unzip', 8)">Show Source</button>
         </div>
         <div class="box" id="unsafe_tar">
             <p class="response" id="response_unsafe_tar"></p>
             <span>Unsafe tar</span>
+            <input type="file" id="file_unsafe_tar">
             <button onclick="handleButtonClick('unsafe_tar', 9)">RUN</button>
             <button onclick="handleShowSourceClick('unsafe_tar', 9)">Show Source</button>
         </div>
         <div class="box" id="safe_tar">
             <p class="response" id="response_safe_tar"></p>
             <span>Safe tar</span>
+            <input type="file" id="file_safe_tar">
             <button onclick="handleButtonClick('safe_tar', 10)">RUN</button>
             <button onclick="handleShowSourceClick('safe_tar', 10)">Show Source</button>
         </div>
     </div>
+    
 
     <button class="small-button" onclick="clearDirectory()">Clear TXT Files</button>
     
@@ -161,7 +194,6 @@
                 })
                 .catch(error => console.error('Error clearing directory:', error));
         }
-
 
         function changeBoxBorderColor(code) {
             const boxes = document.querySelectorAll('.box');
@@ -195,7 +227,25 @@
         }
 
         function handleButtonClick(code, boxNumber) {
-            fetchBoxData(code);
+            const fileInput = document.getElementById(`file_${code}`);
+            const file = fileInput.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append('file', file);
+                fetch(`/upload_${boxNumber}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const responseElement = document.getElementById(`response_${code}`);
+                    responseElement.innerText = data.message;
+                    changeBoxBorderColor(code);
+                })
+                .catch(error => console.error('Error uploading file:', error));
+            } else {
+                fetchBoxData(code);
+            }
             handleShowSourceClick(code, boxNumber);
         }
 
@@ -215,7 +265,6 @@
                 })
                 .catch(error => console.error('Error fetching directory contents:', error));
         }
-
     </script>
 </body>
 </html>

@@ -125,7 +125,6 @@ public class UntarTesting {
 
     public static void safe_tar(String file_name,String output){
         File destDir = new File(output);
-        if(!destDir.exists()){destDir.mkdirs();}
 
         try (TarArchiveInputStream tarIn = new TarArchiveInputStream(new BufferedInputStream(new FileInputStream(file_name)))){
             ArchiveEntry entry;

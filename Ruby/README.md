@@ -244,7 +244,7 @@ end
 
 #### Potencial Issue of `File.join()`
 
-If we use `File.join` instead to check the destination path, it may lead to vulnerabilitiesl:
+If we use `File.join` instead to check the destination path, it may lead to vulnerabilities:
 
 ```rb
 # output = Ruby/PoC/test_case

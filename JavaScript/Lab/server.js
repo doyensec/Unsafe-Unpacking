@@ -3,9 +3,12 @@ const express = require('express');
 const path = require('path');
 const { unsafe_admzip, unsafe_nodezip, unsafe_untar, unsafe_unzip, unsafe_unzipper, safe_admzip, safe_nodezip, safe_untar, safe_unzip, safe_unzipper } = require("./methods");
 const app = express();
+const multer = require('multer');
 const PORT = 3000;
 
 app.use(express.static('templates'));
+const upload = multer({ dest: 'uploads/' });
+
 
 const currentDir = process.cwd();
 const payloadsDir = path.join(__dirname, 'payloads/'); 
@@ -24,12 +27,44 @@ app.get('/run_unsafe_adm_zip', async (req, res) => {
     }
 });
 
+app.post('/upload_1', upload.single('file'), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const uploadedFilePath = req.file.path; // Temporary file path
+
+    try {
+        await unsafe_admzip(uploadedFilePath, archiveDir);
+        fs.unlinkSync(uploadedFilePath);
+        res.json({ "message": 'unpacked' });
+    } catch (e) {
+
+    }
+});
+
 app.get('/run_safe_adm_zip', async (req, res) => {
     try {
         await safe_admzip(path.join(payloadsDir, 'payload.zip'), archiveDir);
         res.json({ "message": 'unpacked' });
     } catch (e) {
         console.log(e)
+    }
+});
+
+app.post('/upload_2', upload.single('file'), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const uploadedFilePath = req.file.path; // Temporary file path
+
+    try {
+        await safe_admzip(uploadedFilePath, archiveDir);
+        fs.unlinkSync(uploadedFilePath);
+        res.json({ "message": 'unpacked' });
+    } catch (e) {
+
     }
 });
 
@@ -42,12 +77,45 @@ app.get('/run_unsafe_unzipper', async (req, res) => {
     }
 });
 
+app.post('/upload_3', upload.single('file'), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const uploadedFilePath = req.file.path; // Temporary file path
+
+    try {
+        await unsafe_unzipper(uploadedFilePath, archiveDir);
+        fs.unlinkSync(uploadedFilePath);
+        res.json({ "message": 'unpacked' });
+    } catch (e) {
+
+    }
+});
+
+
 app.get('/run_safe_unzipper', async (req, res) => {
     try {
         await safe_unzipper(path.join(payloadsDir, 'payload.zip'), archiveDir);
         res.json({ "message": 'unpacked' });
     } catch (e) {
         console.log(e)
+    }
+});
+
+app.post('/upload_4', upload.single('file'), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const uploadedFilePath = req.file.path; // Temporary file path
+
+    try {
+        await safe_unzipper(uploadedFilePath, archiveDir);
+        fs.unlinkSync(uploadedFilePath);
+        res.json({ "message": 'unpacked' });
+    } catch (e) {
+
     }
 });
 
@@ -60,6 +128,22 @@ app.get('/run_unsafe_node_zip', async (req, res) => {
     }
 });
 
+app.post('/upload_5', upload.single('file'), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const uploadedFilePath = req.file.path; // Temporary file path
+
+    try {
+        await unsafe_nodezip(uploadedFilePath, archiveDir);
+        fs.unlinkSync(uploadedFilePath);
+        res.json({ "message": 'unpacked' });
+    } catch (e) {
+
+    }
+});
+
 app.get('/run_safe_node_zip', async (req, res) => {
     try {
         await safe_nodezip(path.join(payloadsDir, 'payload.zip'), archiveDir);
@@ -68,6 +152,23 @@ app.get('/run_safe_node_zip', async (req, res) => {
         console.log(e)
     }
 });
+
+app.post('/upload_6', upload.single('file'), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const uploadedFilePath = req.file.path; // Temporary file path
+
+    try {
+        await safe_nodezip(uploadedFilePath, archiveDir);
+        fs.unlinkSync(uploadedFilePath);
+        res.json({ "message": 'unpacked' });
+    } catch (e) {
+
+    }
+});
+
 
 app.get('/run_unsafe_unzip', async (req, res) => {
     try {
@@ -78,6 +179,23 @@ app.get('/run_unsafe_unzip', async (req, res) => {
     }
 });
 
+app.post('/upload_7', upload.single('file'), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const uploadedFilePath = req.file.path; // Temporary file path
+
+    try {
+        await unsafe_unzip(uploadedFilePath, archiveDir);
+        fs.unlinkSync(uploadedFilePath);
+        res.json({ "message": 'unpacked' });
+    } catch (e) {
+
+    }
+});
+
+
 app.get('/run_safe_unzip', async (req, res) => {
     try {
         await safe_unzip(path.join(payloadsDir, 'payload.zip'), archiveDir);
@@ -86,6 +204,23 @@ app.get('/run_safe_unzip', async (req, res) => {
         console.log(e)
     }
 });
+
+app.post('/upload_8', upload.single('file'), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const uploadedFilePath = req.file.path; // Temporary file path
+
+    try {
+        await safe_unzip(uploadedFilePath, archiveDir);
+        fs.unlinkSync(uploadedFilePath);
+        res.json({ "message": 'unpacked' });
+    } catch (e) {
+
+    }
+});
+
 
 app.get('/run_unsafe_tar', async (req, res) => {
     try {
@@ -96,12 +231,45 @@ app.get('/run_unsafe_tar', async (req, res) => {
     }
 });
 
+app.post('/upload_9', upload.single('file'), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const uploadedFilePath = req.file.path; // Temporary file path
+
+    try {
+        await unsafe_untar(uploadedFilePath, archiveDir);
+        fs.unlinkSync(uploadedFilePath);
+        res.json({ "message": 'unpacked' });
+    } catch (e) {
+
+    }
+});
+
+
 app.get('/run_safe_tar', async (req, res) => {
     try {
         await safe_untar(path.join(payloadsDir, 'payload.tar'), archiveDir);
         res.json({ "message": 'unpacked' });
     } catch (e) {
         console.log(e)
+    }
+});
+
+app.post('/upload_10', upload.single('file'), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const uploadedFilePath = req.file.path; // Temporary file path
+
+    try {
+        await safe_untar(uploadedFilePath, archiveDir);
+        fs.unlinkSync(uploadedFilePath);
+        res.json({ "message": 'unpacked' });
+    } catch (e) {
+
     }
 });
 

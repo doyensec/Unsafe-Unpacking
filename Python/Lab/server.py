@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 from methods import *
 import os
 
@@ -7,6 +7,7 @@ app = Flask(__name__)
 current_dir = os.getcwd()
 archive_dir = os.path.join(current_dir, 'archive')
 payloads_dir = os.path.join(current_dir, 'payloads')
+uploads_dir = os.path.join(current_dir, 'uploads')
 
 @app.route('/')
 def home():
@@ -17,6 +18,25 @@ def unsafe_shutil():
     unpack_tar(os.path.join(payloads_dir, "payload.tar"), archive_dir)
     response_data = {"message": "unpacked"}
     return jsonify(response_data)
+
+@app.route('/upload_1', methods=['POST'])
+def upload_unsafe_shutil():
+    file = request.files['file']
+
+    if file.filename == '':
+        return jsonify({'message': 'No selected file'}), 400
+
+    file_path = os.path.join(uploads_dir, file.filename)
+    file.save(file_path)
+
+    try:
+        unpack_tar(os.path.join(uploads_dir, file.filename), archive_dir)
+        os.remove(os.path.join(uploads_dir, file.filename))
+
+        return jsonify({"message": "unpacked"})
+
+    except Exception as e:
+        return jsonify({'message': f'Error unpacking the tar file: {str(e)}'}), 500
 
 @app.route('/source_1')
 def source1():
@@ -29,9 +49,28 @@ def source1():
 
 @app.route('/run_safe_shutil')
 def safe_shutil():
-    unpack_zip(os.path.join(payloads_dir, "payload.zip"))
+    unpack_zip(os.path.join(payloads_dir, "payload.zip"), archive_dir)
     response_data = {"message": "unpacked"}
     return jsonify(response_data)
+
+@app.route('/upload_2', methods=['POST'])
+def upload_safe_shutil():
+    file = request.files['file']
+
+    if file.filename == '':
+        return jsonify({'message': 'No selected file'}), 400
+
+    file_path = os.path.join(uploads_dir, file.filename)
+    file.save(file_path)
+
+    try:
+        unpack_zip(os.path.join(uploads_dir, file.filename), archive_dir)
+        os.remove(os.path.join(uploads_dir, file.filename))
+
+        return jsonify({"message": "unpacked"})
+
+    except Exception as e:
+        return jsonify({'message': f'Error unpacking the zip file: {str(e)}'}), 500
 
 @app.route('/source_2')
 def source2():
@@ -47,6 +86,25 @@ def unsafe_tar():
     untar_extractall(os.path.join(payloads_dir, "payload.tar"), archive_dir)
     response_data = {"message": "unpacked"}
     return jsonify(response_data)
+
+@app.route('/upload_3', methods=['POST'])
+def upload_unsafe_tar():
+    file = request.files['file']
+
+    if file.filename == '':
+        return jsonify({'message': 'No selected file'}), 400
+
+    file_path = os.path.join(uploads_dir, file.filename)
+    file.save(file_path)
+
+    try:
+        untar_extractall(os.path.join(uploads_dir, file.filename), archive_dir)
+        os.remove(os.path.join(uploads_dir, file.filename))
+
+        return jsonify({"message": "unpacked"})
+
+    except Exception as e:
+        return jsonify({'message': f'Error unpacking the tar file: {str(e)}'}), 500
 
 @app.route('/source_3')
 def source3():
@@ -75,6 +133,25 @@ def safe_tar():
     response_data = {"message": "unpacked"}
     return jsonify(response_data)
 
+@app.route('/upload_4', methods=['POST'])
+def upload_safe_tar():
+    file = request.files['file']
+
+    if file.filename == '':
+        return jsonify({'message': 'No selected file'}), 400
+
+    file_path = os.path.join(uploads_dir, file.filename)
+    file.save(file_path)
+
+    try:
+        untar_safe(os.path.join(uploads_dir, file.filename), archive_dir)
+        os.remove(os.path.join(uploads_dir, file.filename))
+
+        return jsonify({"message": "unpacked"})
+
+    except Exception as e:
+        return jsonify({'message': f'Error unpacking the tar file: {str(e)}'}), 500
+
 @app.route('/source_4')
 def source4():
     code = """def untar_safe(file_name, output):
@@ -95,6 +172,25 @@ def unsafe_zip():
     response_data = {"message": "unpacked"}
     return jsonify(response_data)
 
+@app.route('/upload_5', methods=['POST'])
+def upload_unsafe_zip():
+    file = request.files['file']
+
+    if file.filename == '':
+        return jsonify({'message': 'No selected file'}), 400
+
+    file_path = os.path.join(uploads_dir, file.filename)
+    file.save(file_path)
+
+    try:
+        unsafe_unzip(os.path.join(uploads_dir, file.filename), archive_dir)
+        os.remove(os.path.join(uploads_dir, file.filename))
+
+        return jsonify({"message": "unpacked"})
+
+    except Exception as e:
+        return jsonify({'message': f'Error unpacking the zip file: {str(e)}'}), 500
+
 @app.route('/source_5')
 def source5():
     code = """def unsafe_unzip(file_name, output):
@@ -111,6 +207,25 @@ def safe_zip():
     safe_unzip(os.path.join(payloads_dir, "payload.zip"))
     response_data = {"message": "unpacked"}
     return jsonify(response_data)
+
+@app.route('/upload_6', methods=['POST'])
+def upload_safe_zip():
+    file = request.files['file']
+
+    if file.filename == '':
+        return jsonify({'message': 'No selected file'}), 400
+
+    file_path = os.path.join(uploads_dir, file.filename)
+    file.save(file_path)
+
+    try:
+        safe_unzip(os.path.join(uploads_dir, file.filename), archive_dir)
+        os.remove(os.path.join(uploads_dir, file.filename))
+
+        return jsonify({"message": "unpacked"})
+
+    except Exception as e:
+        return jsonify({'message': f'Error unpacking the zip file: {str(e)}'}), 500
 
 @app.route('/source_6')
 def source6():
@@ -134,6 +249,7 @@ def directory():
         "current_txt_files": current_txt_files,
         "archive_txt_files": archive_txt_files
     })
+
 
 @app.route('/clear_directory')
 def clear_directory():

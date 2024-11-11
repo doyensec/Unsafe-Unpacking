@@ -111,10 +111,35 @@ if (isset($_GET['source'])) {
         echo json_encode(['message' => 'unpacked']);
     } 
     if ($func == "safe_ziparchive_2") {
-        safe_unzip2($payloadDir . "/payload.zip", $archiveDir);
+        ≈($payloadDir . "/payload.zip", $archiveDir);
         header('Content-Type: application/json');
         echo json_encode(['message' => 'unpacked']);
     } 
+} elseif (isset($_GET['upload'])) {
+    $upload = $_GET['upload'];
+    $uploadedFile = $_FILES['file'];
+    
+    $tmpFilePath = 'uploads/' . $uploadedFile['name'];
+    if (move_uploaded_file($uploadedFile['tmp_name'], $tmpFilePath)) {
+        try {
+            if ($upload == 1) {
+                unsafe_unzip($tmpFilePath, $archiveDir);
+            }
+            if ($upload == 2) {
+                safe_unzip($tmpFilePath, $archiveDir);
+            }
+            if ($upload == 3) {
+                safe_unzip2($tmpFilePath, $archiveDir);
+            }
+
+            echo json_encode(['message' => 'unpacked']);
+
+            unlink($tmpFilePath);
+        } catch (Exception $e) {
+        }
+    } else {
+        echo "Failed to upload the file.<br>";
+    }
 } elseif (isset($_GET['directory'])) {
     $currentTxtFiles = array_diff(scandir($currentDir), ['..', '.']);
     $currentTxtFiles = array_values(array_filter($currentTxtFiles, function($file) {
