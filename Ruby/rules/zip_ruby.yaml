@@ -5,32 +5,38 @@ rules:
     severity: ERROR
     message: Unsafe Zip Unpacking 
     patterns:
+      - metavariable-pattern:
+          metavariable: $ZF
+          pattern-either:
+              - pattern: File
+              - pattern: ZipFile
+
       - pattern-either:
         - pattern-inside: |
-            Zip::File.foreach($FILE) do |$ENTRY|
+            Zip::$ZF.foreach($FILE) do |$ENTRY|
               ...
             end
 
         - patterns:
           - pattern-either:
             - pattern-inside: |
-                Zip::File.open($FILE) do |$ZIPFILE|
+                Zip::$ZF.open($FILE) do |$ZIPFILE|
                   ...
                 end
             - pattern-inside: |
-                $ZIP = Zip::File.open(...)
+                $ZIP = Zip::$ZF.open(...)
                 ...
                 $ZIP.each do |$ZIPFILE|
                   ...
                 end
             - pattern-inside: |
-                $ZIP = Zip::File.new(...)
+                $ZIP = Zip::$ZF.new(...)
                 ...
                 $ZIP.each do |$ZIPFILE|
                   ...
                 end
             - pattern-inside: |
-                Zip::File.open_buffer($FILE) do |$ZIPFILE|
+                Zip::$ZF.open_buffer($FILE) do |$ZIPFILE|
                   ...
                 end
 

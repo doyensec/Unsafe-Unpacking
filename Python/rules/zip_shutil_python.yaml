@@ -6,7 +6,6 @@ rules:
     message: Unsafe Zip Unpacking 
     patterns:
       - pattern-either: 
-          #- pattern: $FD.extractall(...)
           - pattern: shutil.unpack_archive(...)
           - pattern: shutil.copyfileobj($SOURCE, $DESTINATION)
 
@@ -33,15 +32,10 @@ rules:
                 ...
 
       - pattern-either:
-          #- pattern-inside: |
-          #    with $FD.open($FILENAME) as $SOURCE:
-          #      ...
           - pattern-inside: |
               with open($FILENAME, ...) as $DESTINATION:
                 ...
-          #- pattern-inside: |
-          #    $SOURCE = $FD.open($FILENAME)
-          #    ...
+
           - pattern-inside: |
               $DESTINATION = open($FILENAME, ...)
               ...

@@ -7,7 +7,6 @@ def unzip1(file_name, output):
     with zipfile.ZipFile(file_name, 'r') as zf:
         for filename in zf.namelist():
 
-            # Output
             output_path = os.path.join(output, filename)
             with zf.open(filename) as source:
                 with open(output_path, 'wb') as destination:
@@ -26,7 +25,6 @@ def unzip3(file_name, output):
     with zipfile.ZipFile(file_name, 'r') as zf:
         for filename in zf.namelist():
 
-            # Output
             output_path = os.path.join(output, filename)
             source = zf.open(filename)
             destination = open(output_path, 'wb')
@@ -82,4 +80,4 @@ def unzip9(file_name, output):
             zf.extractall(output)
 
 
-unzip6("/Users/michael/Doyensec/Research/SemgrepSlip/Python/PoC/payloads/payload.zip", "/Users/michael/Doyensec/Research/SemgrepSlip/Python/PoC/test_case")
+unzip1("/Users/michael/Doyensec/Research/Unsafe-Unpacking/Python/PoC/payloads/payload.zip", "/Users/michael/Doyensec/Research/Unsafe-Unpacking/Python/PoC/test_case")
