@@ -111,7 +111,7 @@ To sanitize the path, we can normalize it using `File.basename`. This method ext
 
 ```rb
 def safe_unzip(file_name, output)
-  # bad
+  # good
   Zip::File.open(file_name) do |zip_file|
     zip_file.each do |entry|
       file_path = File.join(output, File.basename(entry.name))
@@ -162,7 +162,7 @@ end
 
 #### Potencial Issue of `File.join()`
 
-If we use `File.join` instead to check the destination path, it may lead to vulnerabilitiesl:
+If we use `File.join` instead to check the destination path, it may lead to vulnerabilities:
 
 ```rb
 # output = Ruby/PoC/test_case

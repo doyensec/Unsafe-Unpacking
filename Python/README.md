@@ -62,7 +62,7 @@ def unzip(file_name, output):
 
 ### `ZipFile + shutil.copyfileobj() - UNSAFE`
 
-When opening a `ZipFile` there are several ways to extract the data not only with the methods included in the library itself. There are lot of developers using `shutil` to extract the contents of the zip with `shutil.copyfileob()` (actually the builin method uses the same method):
+When opening a `ZipFile` there are several ways to extract the data not only with the methods included in the library itself. There are lot of developers using `shutil` to extract the contents of the zip with `shutil.copyfileobj()` (actually the builin method uses the same method):
 
 ```py
 def copyfileobj(fsrc, fdst, length=0):

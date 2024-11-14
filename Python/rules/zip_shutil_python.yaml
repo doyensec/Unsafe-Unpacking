@@ -6,7 +6,6 @@ rules:
     message: Unsafe Zip Unpacking 
     patterns:
       - pattern-either: 
-          - pattern: shutil.unpack_archive(...)
           - pattern: shutil.copyfileobj($SOURCE, $DESTINATION)
 
       - pattern-inside: |

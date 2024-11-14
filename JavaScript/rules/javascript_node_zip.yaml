@@ -41,10 +41,10 @@ rules:
       
             - pattern-either:
                 - patterns:
-                    - pattern: $FS.writeFileSync(<... $FILE ...>, ...)
+                    - pattern: $FS.writeFileSync(<... $FILE ...>, ..., ...)
 
                 - patterns:
-                    - pattern: $FS.writeFileSync($PATH, ...)
+                    - pattern: $FS.writeFileSync($PATH, ..., ...)
                     - pattern-not-inside: |
                         $PATH = path.join(..., path.basename($FILE))
                         ...

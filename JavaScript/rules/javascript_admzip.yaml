@@ -41,10 +41,10 @@ rules:
 
               - pattern-either:
                   - patterns:
-                      - pattern: $FS.createWriteStream(<... $ENTRY.entryName ...>);
+                      - pattern: $FS.createWriteStream(<... $ENTRY.entryName ...>, ..., ...);
 
                   - patterns:
-                      - pattern: $FS.createWriteStream($PATH)
+                      - pattern: $FS.createWriteStream($PATH, ..., ...)
 
                       - pattern-either:
                           - pattern-inside: |

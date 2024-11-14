@@ -33,18 +33,19 @@ rules:
 
               - pattern-either:
                   - pattern-either:
-                      - pattern: new FileOutputStream(<... $ENTRY.getName() ...>)
-                      - pattern: new java.io.FileOutputStream(<... $ENTRY.getName() ...>)
+                      - pattern: new FileOutputStream(<... $ENTRY.getName() ...>, ...)
+                      - pattern: new java.io.FileOutputStream(<... $ENTRY.getName() ...>, ...)
                       #- pattern: new File(..., <... $ENTRY.getName() ...>)
 
 
                   - patterns:
                       - pattern-either: 
-                          - pattern: new FileOutputStream($PATH)
-                          - pattern: new java.io.FileOutputStream($PATH)
+                          - pattern: new FileOutputStream($PATH, ...)
+                          - pattern: new java.io.FileOutputStream($PATH, ...)
                           - pattern: new File(..., $PATH)
+                          - pattern: new File($PATH, ...)
                           - pattern: Files.copy(..., $PATH, ...)
-                          - pattern: Files.newOutputStream($PATH)
+                          - pattern: Files.newOutputStream($PATH, ...)
 
                       - pattern-either:
                           - pattern-inside: |

@@ -13,30 +13,30 @@ rules:
 
       - pattern-either:
         - pattern-inside: |
-            Zip::$ZF.foreach($FILE) do |$ENTRY|
+            Zip::$ZF.foreach($FILE, ...) do |$ENTRY|
               ...
             end
 
         - patterns:
           - pattern-either:
             - pattern-inside: |
-                Zip::$ZF.open($FILE) do |$ZIPFILE|
+                Zip::$ZF.open($FILE, ...) do |$ZIPFILE|
                   ...
                 end
             - pattern-inside: |
-                $ZIP = Zip::$ZF.open(...)
+                $ZIP = Zip::$ZF.open(..., ...)
                 ...
                 $ZIP.each do |$ZIPFILE|
                   ...
                 end
             - pattern-inside: |
-                $ZIP = Zip::$ZF.new(...)
+                $ZIP = Zip::$ZF.new(..., ...)
                 ...
                 $ZIP.each do |$ZIPFILE|
                   ...
                 end
             - pattern-inside: |
-                Zip::$ZF.open_buffer($FILE) do |$ZIPFILE|
+                Zip::$ZF.open_buffer($FILE, ...) do |$ZIPFILE|
                   ...
                 end
 

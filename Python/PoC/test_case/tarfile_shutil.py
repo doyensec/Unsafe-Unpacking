@@ -15,7 +15,7 @@ def untar1(file_name, output):
 
 def untar2(file_name, output):
     # bad
-    tf = tarfile.open(file_name, 'r')
+    tf = tarfile.open(file_name)
     for member in tf.getmembers():
 
         with tf.extractfile(member) as source, open(member.name, 'wb') as destination:

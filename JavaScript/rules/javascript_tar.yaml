@@ -23,20 +23,20 @@ rules:
 
         - pattern-either:
               - pattern-either:
-                    - pattern: $FS.writeFileSync(<... $ENTRY.name ...>, ...)
+                    - pattern: $FS.writeFileSync(<... $ENTRY.name ...>, ..., ...)
                     - patterns: 
                         - pattern-inside: |
                             $STREAM.pipe(...)
-                        - pattern: $FS.createWriteStream(<... $ENTRY.name ...>)
-                    - pattern: $FS.createWriteStream(<... $PATH ...>)
+                        - pattern: $FS.createWriteStream(<... $ENTRY.name ...>, ..., ...)
+                    - pattern: $FS.createWriteStream(<... $PATH ...>, ..., ...)
               - patterns:
                   - pattern-either:
-                        - pattern: $FS.writeFileSync($PATH, ...)
+                        - pattern: $FS.writeFileSync($PATH, ..., ..., ...)
                         - patterns: 
                             - pattern-inside: |
                                 $STREAM.pipe(...)
-                            - pattern: $FS.createWriteStream(<... $PATH ...>)
-                        - pattern: $FS.createWriteStream(<... $PATH ...>)
+                            - pattern: $FS.createWriteStream(<... $PATH ...>, ..., ...)
+                        - pattern: $FS.createWriteStream(<... $PATH ...>, ..., ...)
                   - pattern-not-inside: |
                       $PATH = path.join(..., path.basename($ENTRY.name))
                       ...

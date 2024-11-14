@@ -6,14 +6,11 @@ rules:
     message: Unsafe Tar Unpacking 
     patterns:
       - pattern-either: 
-          #- pattern: $FD.extractall(...)
-          - pattern: shutil.unpack_archive(...)
           - pattern: shutil.copyfileobj($SOURCE, $DESTINATION)
 
       - pattern-inside: |
           import tarfile
           ...
-      
       - pattern-either: 
           - pattern-inside: |
               with tarfile.open($FILE, ...) as $FD:
@@ -31,21 +28,13 @@ rules:
           - pattern-inside: |
               for $FILENAME in $FD.getmembers():
                 ...
-
       - pattern-either:
-          #- pattern-inside: |
-          #    with $FD.open($FILENAME) as $SOURCE:
-          #      ...
           - pattern-inside: |
               with open($FILENAME.name, ...) as $DESTINATION:
                 ...
-          #- pattern-inside: |
-          #    $SOURCE = $FD.open($FILENAME)
-          #    ...
           - pattern-inside: |
               $DESTINATION = open($FILENAME.name, ...)
               ...
-
           - pattern-inside: |
               $DESTINATION_PATH = os.path.join($DESTINATION, $FILENAME.name)
               ...

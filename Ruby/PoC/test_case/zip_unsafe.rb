@@ -119,6 +119,6 @@ def unzip11(file_name, output)
 end
 
 zip_file_path = '../payloads/payload.zip'
-destination_folder = '/Users/michael/Doyensec/Research/SemgrepSlip/Ruby/PoC/test_case/'
+destination_folder = '../test_case/'
  
-unzip10(zip_file_path, destination_folder)
+unzip1(zip_file_path, destination_folder)

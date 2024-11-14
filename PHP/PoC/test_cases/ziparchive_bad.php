@@ -183,7 +183,7 @@ function unsafe_unzipa($zipFilePath, $outputDir) {
 }
 
 
-$zipFile = '../payloads/payload.tar'; 
-$destination = 'archive';
+$zipFile = '../payloads/payload.zip'; 
+$destination = '../test_cases/';
 unsafe_unzip($zipFile, $destination);
 

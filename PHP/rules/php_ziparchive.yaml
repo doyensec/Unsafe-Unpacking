@@ -26,7 +26,7 @@ rules:
             - patterns:
                 - pattern-either:
                     - pattern: copy(..., <... $PATH ...>)
-                    - pattern: file_put_contents($PATH, ...)
+                    - pattern: file_put_contents($PATH, ..., ..., ...)
 
                 - pattern-either:
                     - pattern-inside: |
@@ -41,9 +41,9 @@ rules:
 
             - patterns:
                 - pattern-either:
-                    - pattern: stream_copy_to_stream(..., $DESTSTREAM)
-                    - pattern: fwrite($DESTREAM, ...)
-                    - pattern: file_put_contents($DESTREAM, ...)
+                    - pattern: stream_copy_to_stream(..., $DESTSTREAM, ..., ...)
+                    - pattern: fwrite($DESTREAM, ..., ...)
+                    - pattern: file_put_contents($DESTREAM, ..., ..., ...)
 
                 - pattern-either:
                     - pattern-inside: |

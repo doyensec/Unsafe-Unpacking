@@ -38,6 +38,7 @@ rules:
           - pattern-either: 
             - pattern: File.open(<... $ENTRY.full_name ...>, $MODE)
             - pattern: ::File.open(<... $ENTRY.full_name ...>, $MODE)
+            - pattern: File.open(<... $ENTRY.full_name ...>)
 
         - patterns:
           - pattern-not-inside: |
@@ -49,6 +50,7 @@ rules:
           - pattern-either: 
             - pattern: File.open(<... $PATH ...>, $MODE)
             - pattern: ::File.open(<... $PATH ...>, $MODE)
+            - pattern: File.open(<... $PATH ...>)
 
           - pattern-either: 
 
