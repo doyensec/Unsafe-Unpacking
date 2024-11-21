@@ -27,6 +27,7 @@ public class UnzipTesting {
     }
 
     public static void unsafe_unzip(String file_name, String output) {
+        // bad
         File destDir = new File(output);
         if (!destDir.exists()) {destDir.mkdirs();}
 
@@ -35,9 +36,10 @@ public class UnzipTesting {
             while ((entry = zip.getNextEntry()) != null) {
                 String path = output + File.separator + entry.getName();
 
-                // create parents
+                // ruleid: zipfile_unsafe_unpacking
                 new File(path).getParentFile().mkdirs();
 
+                // ruleid: zipfile_unsafe_unpacking
                 try (FileOutputStream fos = new FileOutputStream(path)) {
                     byte[] buffer = new byte[1024];
                     int len;
@@ -51,6 +53,7 @@ public class UnzipTesting {
     }
 
     public static void unsafe_unzip2(String file_name, String output) {
+        // bad
         File destDir = new File(output);
         if (!destDir.exists()) {destDir.mkdirs();}
 
@@ -59,9 +62,10 @@ public class UnzipTesting {
             while ((entry = zip.getNextEntry()) != null) {
                 String path = output + File.separator + entry.getName();
 
-                // create parents
+                // ruleid: zipfile_unsafe_unpacking
                 new File(path).getParentFile().mkdirs();
-
+                
+                // ruleid: zipfile_unsafe_unpacking
                 try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(path))){
                     byte[] buffer = new byte[1024];
                     int length;
@@ -86,9 +90,10 @@ public class UnzipTesting {
             while ((entry = zip.getNextEntry()) != null) {
                 String path = Paths.get(output,entry.getName()).toString();
 
-                // create parents
+                // ruleid: zipfile_unsafe_unpacking
                 new File(path).getParentFile().mkdirs();
-
+                
+                // ruleid: zipfile_unsafe_unpacking
                 try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(path))) {
                     byte[] buffer = new byte[1024];
                     int length;
@@ -107,16 +112,15 @@ public class UnzipTesting {
         //bad
         File destDir = new File(output);
         if (!destDir.exists()) {destDir.mkdirs();}
-        //
+        
         try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(Paths.get(file_name))))
         // Don't change anything about the dest dir, either Files.newInputStream(Paths.get(file_name)) or new FileInputStream(file_name)
         {
             ZipEntry entry;
             while ((entry = zip.getNextEntry()) != null) {
                 Path path = Paths.get(output).resolve(entry.getName());
-                // Create parent directories if needed
                 Files.createDirectories(path.getParent());
-                // Write file content
+                // ruleid: zipfile_unsafe_unpacking
                 Files.copy(zip, path, StandardCopyOption.REPLACE_EXISTING);
 
                 zip.closeEntry();
@@ -137,6 +141,7 @@ public class UnzipTesting {
                         fil.mkdirs();
                     } else {
                         fil.getParentFile().mkdirs();
+                        // ruleid: zipfile_unsafe_unpacking
                         try (InputStream in = zipFile.getInputStream(entry);
                              OutputStream out = Files.newOutputStream(destPath)) {
                             in.transferTo(out);
@@ -151,7 +156,7 @@ public class UnzipTesting {
         }
     }
 
-    public static void unsafe_unzip6(String file_name, String output) {
+    public static void safe_unzip1(String file_name, String output) {
         File destDir = new File(output);
         try (ZipFile zipFile = new ZipFile(new File(file_name))) {
             zipFile.entries().asIterator().forEachRemaining(entry -> {
@@ -199,7 +204,7 @@ public class UnzipTesting {
         unArchiver.extract();
     } 
 
-    public static void safe_unzip(String file_name, String output) {
+    public static void safe_unzip5(String file_name, String output) {
         try (ZipFile zipFile = new ZipFile(new File(file_name))) {
             zipFile.entries().asIterator().forEachRemaining(entry -> {
                 try{
@@ -224,25 +229,3 @@ public class UnzipTesting {
         }
     }
 }
-
-/*
- * indiferent:
- *
- *   String path = output + File.separator + entry.getName();
- *   // create parents
- *   new File(path).getParentFile().mkdirs();
- *
- *
- *    Path path = destDir.resolve(entry.getName());
- *   // Create parent directories if needed
- *   Files.createDirectories(path.getParent());
- *
- *
- *   if (entry.isDirectory()) {
- *      fil.mkdirs();
- *  } else {
- *       fil.getParentFile().mkdirs();
- *
- *   Path dispath = Paths.get(output,entry.getName());
- *   File fil = new File(dispath.toString());
- * */

@@ -32,9 +32,9 @@ public class UntarTesting {
             ArchiveEntry entry;
             while((entry = tarIn.getNextEntry()) != null){
                 String path = output + File.separator + entry.getName();
-                // create parents
+                // ruleid: tar_unsafe_unpacking
                 new File(path).getParentFile().mkdirs();
-
+                // ruleid: tar_unsafe_unpacking
                 try(FileOutputStream fos = new FileOutputStream(path)){
                     byte[] buffer = new byte[1024];
                     int length;
@@ -57,9 +57,10 @@ public class UntarTesting {
             while((entry = tarIn.getNextEntry()) != null){
                 String path = output + File.separator + entry.getName();
 
-                // create parents
+                // ruleid: tar_unsafe_unpacking
                 new File(path).getParentFile().mkdirs();
 
+                // ruleid: tar_unsafe_unpacking
                 try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(path))){
                     byte[] buffer = new byte[1024];
                     int length;
@@ -86,6 +87,7 @@ public class UntarTesting {
                 if (entry.isDirectory()) {
                     Files.createDirectories(extractTo);
                 } else {
+                    // ruleid: tar_unsafe_unpacking
                     Files.copy(tarIn, extractTo);
                 }
             }
@@ -105,6 +107,7 @@ public class UntarTesting {
                 if (entry.isDirectory()) {
                     Files.createDirectories(extractTo);
                 } else {
+                    // ruleid: tar_unsafe_unpacking
                     Files.copy(tarIn, extractTo);
                 }
             }
@@ -113,7 +116,7 @@ public class UntarTesting {
         }
     }
 
-    public static void safe_tar2(String file_name, String output){
+    public static void safe_tar(String file_name, String output){
         File input = new File(file_name);
         File destDir = new File(output);
 
@@ -123,7 +126,7 @@ public class UntarTesting {
         unArchiver.extract();
     }
 
-    public static void safe_tar(String file_name,String output){
+    public static void safe_tar2(String file_name,String output){
         File destDir = new File(output);
 
         try (TarArchiveInputStream tarIn = new TarArchiveInputStream(new BufferedInputStream(new FileInputStream(file_name)))){

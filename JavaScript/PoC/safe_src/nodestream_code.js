@@ -11,4 +11,7 @@ function unzipUsingStreamZip(filePath, outputDir) {
     }).catch(err => console.error('Error:', err));
 }
 
-unzipUsingStreamZip('../payloads/payload.zip', '/Users/michael/Doyensec/Research/SemgrepSlip/JavaScript/PoC/test/');
+zip_file_path = "../payloads/payload.zip"
+destination_folder = '../safe_src/'
+
+unzipUsingStreamZip(zip_file_path, destination_folder)

@@ -9,5 +9,7 @@ function unzipFile(zipFilePath, outputDir) {
     });
 }
 
-// Example usage
-unzipFile('../payloads/payload.zip', '/Users/michael/Doyensec/Research/SemgrepSlip/JavaScript/PoC/test')
+zip_file_path = "../payloads/payload.zip"
+destination_folder = '../safe_src/'
+
+unzipFile(zip_file_path, destination_folder)

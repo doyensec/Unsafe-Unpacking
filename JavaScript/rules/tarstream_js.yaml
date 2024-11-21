@@ -1,5 +1,5 @@
 rules:
-  - id: unsafe_unpacking
+  - id: tarstream_unsafe_unpacking
     languages:
       - javascript
     severity: ERROR
@@ -24,26 +24,28 @@ rules:
         - pattern-either:
               - pattern-either:
                     - pattern: $FS.writeFileSync(<... $ENTRY.name ...>, ..., ...)
+                    - pattern: $FS.writeFileAsync(<... $ENTRY.name ...>, ..., ...)
                     - patterns: 
                         - pattern-inside: |
                             $STREAM.pipe(...)
-                        - pattern: $FS.createWriteStream(<... $ENTRY.name ...>, ..., ...)
-                    - pattern: $FS.createWriteStream(<... $PATH ...>, ..., ...)
+                        - pattern: $FS.createWriteStream(<... $ENTRY.name ...>, ...)
+                    - pattern: $FS.createWriteStream(<... $PATH ...>, ...)
               - patterns:
                   - pattern-either:
-                        - pattern: $FS.writeFileSync($PATH, ..., ..., ...)
+                        - pattern: $FS.writeFileSync($PATH, ..., ...)
+                        - pattern: $FS.writeFileAsync($PATH, ..., ...)
                         - patterns: 
                             - pattern-inside: |
                                 $STREAM.pipe(...)
-                            - pattern: $FS.createWriteStream(<... $PATH ...>, ..., ...)
-                        - pattern: $FS.createWriteStream(<... $PATH ...>, ..., ...)
+                            - pattern: $FS.createWriteStream(<... $PATH ...>, ...)
+                        - pattern: $FS.createWriteStream(<... $PATH ...>, ...)
                   - pattern-not-inside: |
-                      $PATH = path.join(..., path.basename($ENTRY.name))
+                      $PATH = path.join(..., path.basename(<... $ENTRY.name ...>))
                       ...
 
                   - pattern-either:
                       - pattern-inside: |
-                          $PATH = path.join(..., $ENTRY.name)
+                          $PATH = path.join(..., <... $ENTRY.name ...>)
                           ...
                       - pattern-inside: |
                           $PATH = <... $ENTRY.name ...>

@@ -47,4 +47,7 @@ function unzip2(zipFilePath, outputDir) {
 }
 
 
-unzip1('../payloads/payload_good.zip', '/Users/michael/Doyensec/Research/SemgrepSlip/JavaScript/PoC/test/');
+zip_file_path = "../payloads/payload.zip"
+destination_folder = '../safe_src/'
+
+unzip1(zip_file_path, destination_folder)

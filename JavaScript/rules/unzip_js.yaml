@@ -1,5 +1,5 @@
 rules:
-  - id: unsafe_unpacking
+  - id: unzip_unsafe_unpacking
     languages:
       - javascript
     severity: ERROR
@@ -8,10 +8,10 @@ rules:
         - patterns: 
             - pattern-either: 
                 - pattern-inside: |
-                    $UNZIPPER = require('unzipper')
+                    $UNZIPPER = require('unzip')
                     ...
                 - pattern-inside: |
-                    import $UNZIPPER from 'unzipper'
+                    import $UNZIPPER from 'unzip'
                     ...
             - pattern-either:
                 - pattern-inside: |
@@ -31,27 +31,30 @@ rules:
 
         - pattern-either:
               - pattern-either:
-                    - pattern: $FS.writeFileSync(<... $ENTRY.path ...>, ..., ...)
+                    - pattern: $FS.writeFileSync(<... $ENTRY.path ...>, ...)
+                    - pattern: $FS.writeFileAsync(<... $ENTRY.path ...>, ...)
                     - patterns: 
                         - pattern-inside: |
                             entry.pipe(...)
-                        - pattern: $FS.createWriteStream(<... $ENTRY.path ...>, ..., ...)
-                    - pattern: $FS.createWriteStream(<... $ENTRY.path ...>, ..., ...)
+                        - pattern-either:
+                          - pattern: $FS.createWriteStream(<... $ENTRY.path ...>, ...)
+                    - pattern: $FS.createWriteStream(<... $ENTRY.path ...>, ...)
 
               - patterns:
                   - pattern-either:
-                      - pattern: $FS.writeFileSync($PATH, ..., ...)
+                      - pattern: $FS.writeFileSync(<... $PATH ...>, ...)
+                      - pattern: $FS.writeFileAsync(<... $PATH ...>, ...)
                       - patterns: 
                           - pattern-inside: |
                               entry.pipe(...)
-                          - pattern: $FS.createWriteStream(<... $PATH ...>, ..., ...)
-                      - pattern: $FS.createWriteStream(<... $ENTRY.path ...>, ..., ...)
+                          - pattern: $FS.createWriteStream(<... $PATH ...>, ...)
+                      - pattern: $FS.createWriteStream(<... $ENTRY.path ...>, ...)
                   - pattern-not-inside: |
-                      $PATH = path.join(..., path.basename($ENTRY.path))
+                      $PATH = path.join(..., path.basename(<... $ENTRY.path ...>))
                       ...
                   - pattern-either:
                       - pattern-inside: |
-                          $PATH = path.join(..., $ENTRY.path)
+                          $PATH = path.join(..., <... $ENTRY.path ...>)
                           ...
                       - pattern-inside: |
                           $PATH = <... $ENTRY.path ...>

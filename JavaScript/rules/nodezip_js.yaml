@@ -1,0 +1,61 @@
+rules:
+  - id: node_zip_unsafe_unpacking
+    languages:
+      - javascript
+    severity: ERROR
+    message: Unsafe Zip Unpacking 
+    patterns:
+        - pattern-either: 
+            - pattern-inside: |
+                $NODEZIP = require('node-zip')
+                ...
+            - pattern-inside: |
+                import $NODEZIP from 'node-zip'
+                ...
+        - pattern-either:
+            - pattern-inside: |
+                $ZIP = $NODEZIP($DATA)
+                ...
+            - pattern-inside: |
+                $ZIP = new $NODEZIP($DATA, ...)
+                ...
+            - pattern-inside: |
+                $ZIP = new $NODEZIP($DATA)
+                ...
+
+        - pattern-either:
+            - pattern-inside: |
+                $FILES = $ZIP.files
+                ...
+                for ($FILE in $FILES) { ... }
+            - pattern-inside: |
+                for ($FILE in $ZIP.files) { ... }
+            - pattern-inside: |
+                $FILES = $ZIP.files
+                ...
+                Object.keys($FILES).forEach(($FILE) => { ... })
+            - pattern-inside: |
+                Object.keys($ZIP.files).forEach(($FILE) => { ... })
+    
+        - pattern-either:
+            - pattern-either:
+                - pattern: $FS.createWriteStream(<... $FILE ...>, ...)
+                - pattern: $FS.writeFileSync(<... $FILE ...>, ..., ...)
+                - pattern: $FS.writeFileAsync(<... $FILE ...>, ..., ...)
+                
+
+            - patterns:
+                - pattern-either:
+                    - pattern: $FS.createWriteStream(<... $PATH ...>, ...)
+                    - pattern: $FS.writeFileSync(<... $PATH ...>, ..., ...)
+                    - pattern: $FS.writeFileAsync(<... $PATH ...>, ..., ...)
+                - pattern-not-inside: |
+                    $PATH = path.join(..., path.basename(<... $FILE ...>))
+                    ...
+                - pattern-either:
+                    - pattern-inside: |
+                        $PATH = path.join(..., <... $FILE ...>)
+                        ...
+                    - pattern-inside: |
+                        $PATH = <... $FILE ...>
+                        ...

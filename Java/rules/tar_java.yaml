@@ -1,5 +1,5 @@
 rules:
-  - id: unsafe_unpacking
+  - id: tar_unsafe_unpacking
     languages:
       - java
     severity: ERROR
@@ -17,7 +17,6 @@ rules:
                     }
 
         - pattern-either:
-            # Loop cases
             - patterns:
             
               - pattern-either: 
@@ -35,7 +34,8 @@ rules:
                   - pattern-either:
                       - pattern: new FileOutputStream(<... $ENTRY.getName() ...>, ...)
                       - pattern: new java.io.FileOutputStream(<... $ENTRY.getName() ...>, ...)
-                      #- pattern: new File(..., <... $ENTRY.getName() ...>)
+                      - pattern: new File(..., <... $ENTRY.getName() ...>)
+                      - pattern: new File(<... $ENTRY.getName() ...>, ...)
 
 
                   - patterns:
