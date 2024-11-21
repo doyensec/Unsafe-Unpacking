@@ -40,7 +40,7 @@ def untar4(tar_file_path, output_dir)
   File.open(tar_file_path, 'rb') do |file|
     tar_reader = Gem::Package::TarReader.new(file)
     # Use seek to find and yield the specific entry
-    tar_reader.seek("../secret.txt") do |entry|
+    tar_reader.seek("../poc.txt") do |entry|
       entry_path = File.join(output_dir, entry.full_name)
       
       # ruleid: unsafe_tar_unpacking
@@ -109,4 +109,7 @@ def untar8(file_name, output)
   end
 end 
 
-untar8("/Users/michael/Doyensec/Research/SemgrepSlip/Ruby/PoC/payloads/payload.tar", "/Users/michael/Doyensec/Research/SemgrepSlip/Ruby/PoC/test_case")
+tar_file_path = '../payloads/payload.tar'
+destination_folder = '../src/'
+ 
+untar1(tar_file_path, destination_folder)

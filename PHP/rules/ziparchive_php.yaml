@@ -1,5 +1,5 @@
 rules:
-  - id: unsafe_unpacking
+  - id: ziparchive_unsafe_unpacking
     languages:
       - php
     severity: ERROR

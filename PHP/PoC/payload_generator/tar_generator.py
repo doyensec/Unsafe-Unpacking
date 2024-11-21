@@ -14,5 +14,5 @@ def compress_file(filename):
         # Add the file to the tar archive
         tarf.addfile(tarinfo, data)
  
-filename = '../secret.txt'
+filename = '../poc.txt'
 compress_file(filename)

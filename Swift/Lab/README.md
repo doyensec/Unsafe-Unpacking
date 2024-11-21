@@ -2,7 +2,7 @@
 
 ## 1. [Zip](https://github.com/marmelroy/Zip.git)
 
-From `ZipLab` directory install the package running:
+From `ZipLab` directory install the package with the following command:
 
 ```sh
 swift package update

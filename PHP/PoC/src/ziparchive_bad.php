@@ -1,24 +1,25 @@
 <?php
 
 function unsafe_unzip($file_name, $output) {
+    # bad
     $zip = new ZipArchive;
     $zip->open($file_name);
     for ($i = 0; $i < $zip->numFiles; $i++) {
         $entry = $zip->getNameIndex($i);
         $outputPath = $output . '/' . $entry;
+        # ruleid: ziparchive_unsafe_unpacking
         copy("zip://" . $file_name . "#" . $entry, $outputPath);
     }
     $zip->close();
     
 }
 
-function unsafe_unzip_2($file_name, $output) {
+function unsafe_unzip_1($file_name, $output) {
+    # bad
     $zip = new ZipArchive;
     $zip->open($file_name);
     for ($i = 0; $i < $zip->numFiles; $i++) {
-        
-
-        // Copy the file from the zip to the output directory
+        # ruleid: ziparchive_unsafe_unpacking
         copy("zip://" . $file_name . "#" . $zip->getNameIndex($i), $output . '/' . $zip->getNameIndex($i));
     }
     $zip->close();
@@ -26,20 +27,24 @@ function unsafe_unzip_2($file_name, $output) {
 }
 
 function unsafe_unzip2($file_name, $output) {
+    # bad
     $zip = new ZipArchive;
     if ($zip->open($path) === true) {
         for($i = 0; $i < $zip->numFiles; $i++) {
             $entry = $zip->getNameIndex($i);
+            # ruleid: ziparchive_unsafe_unpacking
             copy("zip://".$file_name."#".$entry, $output."/".$entry);
         }                   
         $zip->close();                   
     }
 }
 
-function unzip2_good($file_name, $output) {
+function safe_zip($file_name, $output) {
+    # good
     $zip = new ZipArchive;
     if ($zip->open($path) === true) {
         for($i = 0; $i < $zip->numFiles; $i++) {
+            # basename
             $entry = basename($zip->getNameIndex($i));
             copy("zip://".$file_name."#".$filename, $output."/".$entry);
         }                   
@@ -48,13 +53,14 @@ function unzip2_good($file_name, $output) {
 }
 
 function unsafe_unzip3($file_name, $output) {
+    # bad
     $zip = new ZipArchive;
     if ($zip->open($file_name) === true) {
         $i = 0;
         while ($i < $zip->numFiles) {
             $entry = $zip->getNameIndex($i);
             $outputPath = $output . '/' . $entry;
-
+            # ruleid: ziparchive_unsafe_unpacking
             copy("zip://" . $file_name . "#" . $entry, $outputPath);
             $i++;
         }
@@ -63,6 +69,7 @@ function unsafe_unzip3($file_name, $output) {
 }
 
 function unsafe_unzip4($file_name, $output) {
+    # bad
     $zip = new ZipArchive;
     if ($zip->open($file_name) === true) {
         for ($i = 0; $i < $zip->numFiles; $i++) {
@@ -70,6 +77,7 @@ function unsafe_unzip4($file_name, $output) {
             $sourceStream = fopen("zip://".$file_name."#".$entry, 'r');
             $destStream = fopen($output."/".$entry, 'w');
 
+            # ruleid: ziparchive_unsafe_unpacking
             stream_copy_to_stream($sourceStream, $destStream);
 
             fclose($sourceStream);
@@ -80,6 +88,7 @@ function unsafe_unzip4($file_name, $output) {
 }
 
 function unsafe_unzip5($file_name, $output) {
+    # bad
     $zip = new ZipArchive;
     if ($zip->open($file_name) === true) {
         for ($i = 0; $i < $zip->numFiles; $i++) {
@@ -89,6 +98,7 @@ function unsafe_unzip5($file_name, $output) {
 
             if ($sourceStream && $destStream) {
                 while ($buffer = fread($sourceStream, 4096)) { 
+                    # ruleid: ziparchive_unsafe_unpacking
                     fwrite($destStream, $buffer); 
                 }
             }
@@ -100,6 +110,7 @@ function unsafe_unzip5($file_name, $output) {
 }
 
 function unsafe_unzip6($file_name, $output) {
+    # bad
     $zip = new ZipArchive;
     if ($zip->open($file_name) === true) {
         for ($i = 0; $i < $zip->numFiles; $i++) {
@@ -108,7 +119,8 @@ function unsafe_unzip6($file_name, $output) {
             $destStream = fopen($output."/".$entry, 'w');
 
             while (!feof($sourceStream)) {
-                fwrite($destStream, fread($sourceStream, 8192)); // Read and write in chunks
+                # ruleid: ziparchive_unsafe_unpacking
+                fwrite($destStream, fread($sourceStream, 8192)); 
             }
 
             fclose($sourceStream);
@@ -119,6 +131,7 @@ function unsafe_unzip6($file_name, $output) {
 }
 
 function unsafe_unzip7($file_name, $output) {
+    # bad
     $zip = new ZipArchive;
     if ($zip->open($file_name) === true) {
         for ($i = 0; $i < $zip->numFiles; $i++) {
@@ -127,6 +140,7 @@ function unsafe_unzip7($file_name, $output) {
 
             $outputFilePath = $output . "/" . $filename;
 
+            # ruleid: ziparchive_unsafe_unpacking
             file_put_contents($outputFilePath, stream_get_contents($sourceStream));
 
             fclose($sourceStream);
@@ -136,10 +150,12 @@ function unsafe_unzip7($file_name, $output) {
 }
 
 function unsafe_unzip8($file_name, $output) {
+    # bad
     $zip = new ZipArchive;
     if ($zip->open($file_name) === true) {
         for($i = 0; $i < $zip->numFiles; $i++) {
             $filename = $zip->getNameIndex($i);
+            # ruleid: ziparchive_unsafe_unpacking
             file_put_contents($filename, $output."/".$this->getFromIndex($i));
         }                   
         $zip->close();                   
@@ -147,6 +163,7 @@ function unsafe_unzip8($file_name, $output) {
 }
 
 function unsafe_unzip9($file_name, $output) {
+    # bad
     $zip = new ZipArchive;
     if ($zip->open($file_name) === true) {
         for ($i = 0; $i < $zip->numFiles; $i++) {
@@ -154,6 +171,7 @@ function unsafe_unzip9($file_name, $output) {
             $sourceStream = fopen("zip://".$file_name."#".$filename, 'r');
             $destStream = fopen($output . "/" . $filename, 'w');
             if ($sourceStream && $destStream) {
+                # ruleid: ziparchive_unsafe_unpacking
                 fpassthru($sourceStream);
                 fclose($sourceStream);
                 fclose($destStream);
@@ -163,17 +181,16 @@ function unsafe_unzip9($file_name, $output) {
     }
 }
 
-function unsafe_unzipa($zipFilePath, $outputDir) {
+function unsafe_unzip10($zipFilePath, $outputDir) {
+    # bad
     $zip = new ZipArchive;
 
-    // Open the zip file
     if ($zip->open($zipFilePath) === TRUE) {
-        // Iterate through the files in the zip
         for ($i = 0; $i < $zip->numFiles; $i++) {
             $entry = $zip->getNameIndex($i);
             $outputPath = $outputDir . '/' . $entry;
 
-            // Copy the file from the zip to the output directory
+            # ruleid: ziparchive_unsafe_unpacking
             copy("zip://$zipFilePath#$entry", $outputPath);
         }
         $zip->close();
@@ -186,4 +203,3 @@ function unsafe_unzipa($zipFilePath, $outputDir) {
 $zipFile = '../payloads/payload.zip'; 
 $destination = '../test_cases/';
 unsafe_unzip($zipFile, $destination);
-

@@ -151,7 +151,7 @@ Using `File.expand_path()` is crucial, this method converts a relative file path
 ```rb
 # output = Ruby/PoC/test_case
 
-# path = Ruby/PoC/secret.txt
+# path = Ruby/PoC/poc.txt
 path = File.expand_path(entry_var, output)
 
 # Check for path traversal
@@ -167,7 +167,7 @@ If we use `File.join` instead to check the destination path, it may lead to vuln
 ```rb
 # output = Ruby/PoC/test_case
 
-# path = Ruby/PoC/test_case/../secret.txt
+# path = Ruby/PoC/test_case/../poc.txt
 path = File.join(output, entry_var)
 
 # Incorrect check
@@ -233,7 +233,7 @@ Using `File.expand_path()` is crucial, this method converts a relative file path
 ```rb
 # output = Ruby/PoC/test_case
 
-# path = Ruby/PoC/secret.txt
+# path = Ruby/PoC/poc.txt
 path = File.expand_path(entry_var, output)
 
 # Check for path traversal
@@ -249,7 +249,7 @@ If we use `File.join` instead to check the destination path, it may lead to vuln
 ```rb
 # output = Ruby/PoC/test_case
 
-# path = Ruby/PoC/test_case/../secret.txt
+# path = Ruby/PoC/test_case/../poc.txt
 path = File.join(output, entry_var)
 
 # Incorrect check

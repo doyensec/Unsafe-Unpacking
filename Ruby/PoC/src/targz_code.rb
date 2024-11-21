@@ -34,4 +34,7 @@ def untargz2(file_name, output)
   end
 end
 
-untargz2("/Users/michael/Doyensec/Research/SemgrepSlip/Ruby/PoC/payloads/payload.tar.gz", "/Users/michael/Doyensec/Research/SemgrepSlip/Ruby/PoC/test_case")
+tar_file_path = '../payloads/payload.tar'
+destination_folder = '../src/'
+ 
+untargz(tar_file_path, destination_folder)

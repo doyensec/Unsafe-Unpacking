@@ -10,6 +10,7 @@ def unzip1(file_name, output):
             output_path = os.path.join(output, filename)
             with zf.open(filename) as source:
                 with open(output_path, 'wb') as destination:
+                    # ruleid: zip_shutil_unsafe_unpacking
                     shutil.copyfileobj(source, destination)
 
 def unzip2(file_name, output):
@@ -18,6 +19,7 @@ def unzip2(file_name, output):
     for filename in zf.namelist():
 
         with zf.open(filename) as source, open(filename, 'wb') as destination:
+            # ruleid: zip_shutil_unsafe_unpacking
             shutil.copyfileobj(source, destination)
 
 def unzip3(file_name, output):
@@ -28,6 +30,7 @@ def unzip3(file_name, output):
             output_path = os.path.join(output, filename)
             source = zf.open(filename)
             destination = open(output_path, 'wb')
+            # ruleid: zip_shutil_unsafe_unpacking
             shutil.copyfileobj(source, destination)
 
 
@@ -38,6 +41,7 @@ def unzip4(file_name, output):
             
         source = zf.open(filename)
         destination = open(filename, 'wb')
+        # ruleid: zip_shutil_unsafe_unpacking
         shutil.copyfileobj(source, destination)
 
 def unzip5(file_name, output):
@@ -54,6 +58,7 @@ def unzip6(file_name, output):
             output_path = os.path.join(output, x)
             with zf.open(x) as source_file:
                 with open(output_path, 'wb') as target_file:
+                    # ruleid: zip_shutil_unsafe_unpacking
                     shutil.copyfileobj(source_file, target_file)
 
 def unzip7(file_name, output):
@@ -79,5 +84,7 @@ def unzip9(file_name, output):
     with zipfile.ZipFile(file_name, 'r') as zf:
             zf.extractall(output)
 
+zip_file_path = "../payloads/payload.zip"
+destination_folder = '../src/'
 
-unzip1("/Users/michael/Doyensec/Research/Unsafe-Unpacking/Python/PoC/payloads/payload.zip", "/Users/michael/Doyensec/Research/Unsafe-Unpacking/Python/PoC/test_case")
+unzip1(zip_file_path, destination_folder)

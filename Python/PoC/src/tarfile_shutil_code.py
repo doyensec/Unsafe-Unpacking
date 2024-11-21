@@ -11,6 +11,7 @@ def untar1(file_name, output):
             output_path = os.path.join(output, member.name)
             with tf.extractfile(member) as source_file:
                 with open(output_path, 'wb') as dest_file:
+                    # ruleid: tar_shutil_unsafe_unpacking
                     shutil.copyfileobj(source_file, dest_file)
 
 def untar2(file_name, output):
@@ -19,6 +20,7 @@ def untar2(file_name, output):
     for member in tf.getmembers():
 
         with tf.extractfile(member) as source, open(member.name, 'wb') as destination:
+            # ruleid: tar_shutil_unsafe_unpacking
             shutil.copyfileobj(source, destination)
 
 def untar3(file_name, output):
@@ -30,6 +32,7 @@ def untar3(file_name, output):
             output_path = os.path.join(output, member.name)
             source = tf.extractfile(member)
             destination = open(output_path, 'wb')
+            # ruleid: tar_shutil_unsafe_unpacking
             shutil.copyfileobj(source, destination)
 
 
@@ -40,6 +43,7 @@ def untar4(file_name, output):
             
         source = tf.extractfile(member)
         destination = open(member.name, 'wb')
+        # ruleid: tar_shutil_unsafe_unpacking
         shutil.copyfileobj(source, destination)
 
 
@@ -48,30 +52,8 @@ def unitar5(file_name, output):
     with tarfile.open(file_name, 'r') as tf:
         [shutil.copyfileobj(tf.extractfile(member), open(os.path.join(output, member.name), 'wb')) for member in tf.getmembers()]
 
-def untar6(file_name, output):
-    # bad
-    with tarfile.open(file_name, 'r') as tf:
-        members = tf.getmembers()
-        
-        for x in members:
-            output_path = os.path.join(output, x.name)
-            with tf.extract(x) as source_file:
-                with open(output_path, 'wb') as target_file:
-                    shutil.copyfileobj(source_file, target_file)
 
-def untar7(file_name, output):
-    # good
-    with tarfile.open(file_name, 'r') as tf:
-        members = tf.getmembers()
-        
-        for x in members:
-            output_path = os.path.join(output, os.path.basename(x.name))
-            with tf.extract(x) as source_file:
-                with open(output_path, 'wb') as target_file:
-                    shutil.copyfileobj(source_file, target_file)
+tar_file_path = "../payloads/payload.tar"
+destination_folder = '../src/'
 
-def untar8(file_name, output):
-    # bad
-    with tarfile.open(file_name, 'r') as tf:
-        os.makedirs(output, exist_ok=True)
-        tf.extractall(path=output)
+untar1(tar_file_path, destination_folder)

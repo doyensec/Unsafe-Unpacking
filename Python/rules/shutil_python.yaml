@@ -1,5 +1,5 @@
 rules:
-  - id: unsafe_unpacking
+  - id: shutil_unsafe_unpacking
     languages:
       - python
     severity: ERROR

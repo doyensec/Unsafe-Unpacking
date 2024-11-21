@@ -1,5 +1,5 @@
 rules:
-  - id: unsafe_unpacking
+  - id: tar_shutil_unsafe_unpacking
     languages:
       - python
     severity: ERROR
@@ -36,15 +36,15 @@ rules:
               $DESTINATION = open($FILENAME.name, ...)
               ...
           - pattern-inside: |
-              $DESTINATION_PATH = os.path.join($DESTINATION, $FILENAME.name)
+              $DESTINATION_PATH = os.path.join($DEST, $FILENAME.name)
               ...
               with open($DESTINATION_PATH, ...) as $DESTINATION:
                 ...
           - pattern-inside: |
-              $DESTINATION_PATH = os.path.join($DESTINATION, $FILENAME.name)
+              $DESTINATION_PATH = os.path.join($DEST, $FILENAME.name)
               ...
               $DESTINATION = open($DESTINATION_PATH, ...)
               ...
           - pattern-inside: |
-              $DESTINATION_PATH = os.path.join($DESTINATION, $FILENAME.name)
+              $DESTINATION_PATH = os.path.join($DEST, $FILENAME.name)
               ...

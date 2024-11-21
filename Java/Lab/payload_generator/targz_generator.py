@@ -14,4 +14,4 @@ def create_tar_gz_archive(output_tar_gz_file, file_name, content):
         tar.addfile(tarinfo, file_like_object)
  
 # Example usage:
-create_tar_gz_archive('../payloads/payload.tar.gz', '../secret.txt', 'This is the content of the file.')
+create_tar_gz_archive('../payloads/payload.tar.gz', '../poc.txt', 'PoC')

@@ -1,5 +1,5 @@
 rules:
-  - id: unsafe_unpacking
+  - id: zip_shutil_unsafe_unpacking
     languages:
       - python
     severity: ERROR
@@ -11,7 +11,6 @@ rules:
       - pattern-inside: |
           import zipfile
           ...
-      
       - pattern-either: 
           - pattern-inside: |
               with zipfile.ZipFile($FILE, ...) as $FD:
