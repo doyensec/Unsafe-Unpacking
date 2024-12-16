@@ -1,4 +1,4 @@
-# Unsafe Unpacking Rules 
+# Unsafe Unpacking Research
 
 This repository contains the research and development work done by [Doyensec](https://doyensec.com/) on decompression attacks across different programming languages.
 The objective of the research was to identify, analyze, and detect vulnerable implementations in several popular programming languages used for web and app development, including - Python, Ruby, Swift, Java, PHP, and JavaScript. 
