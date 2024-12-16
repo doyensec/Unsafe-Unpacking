@@ -21,7 +21,7 @@ public class UntarTesting {
         String tarFilePath = "Java/poc/payloads/payload.tar";
         String destDir = "Java/poc/archives"; 
 
-        unsafe_untar2(tarFilePath, destDir);
+        unsafe_untar(tarFilePath, destDir); // Replace with desired function to test
     }
 
     public static void unsafe_untar(String file_name,String output){
@@ -127,8 +127,6 @@ public class UntarTesting {
     }
 
     public static void safe_tar2(String file_name,String output){
-        File destDir = new File(output);
-
         try (TarArchiveInputStream tarIn = new TarArchiveInputStream(new BufferedInputStream(new FileInputStream(file_name)))){
             ArchiveEntry entry;
             while((entry = tarIn.getNextEntry()) != null){

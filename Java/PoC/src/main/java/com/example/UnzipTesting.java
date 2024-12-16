@@ -23,7 +23,7 @@ public class UnzipTesting {
 
         String zipFilePath = "Java/poc/payloads/payload.zip";
         String destDir = "Java/poc/archives"; // Replace with your output directory
-        unsafe_unzip6(zipFilePath, destDir);
+        unsafe_unzip(zipFilePath, destDir); // Replace with desired function to test
     }
 
     public static void unsafe_unzip(String file_name, String output) {
@@ -114,8 +114,8 @@ public class UnzipTesting {
         if (!destDir.exists()) {destDir.mkdirs();}
         
         try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(Paths.get(file_name))))
-        // Don't change anything about the dest dir, either Files.newInputStream(Paths.get(file_name)) or new FileInputStream(file_name)
         {
+            // Don't change anything about the dest dir, either Files.newInputStream(Paths.get(file_name)) or new FileInputStream(file_name)
             ZipEntry entry;
             while ((entry = zip.getNextEntry()) != null) {
                 Path path = Paths.get(output).resolve(entry.getName());
