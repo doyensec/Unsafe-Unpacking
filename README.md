@@ -16,4 +16,4 @@ Please refer to https://blog.doyensec.com/2024/12/16/unsafe-unpacking.html for t
 
 This project was made with support of [Doyensec](https://doyensec.com/research.html).
 
-![Doyensec Research](docs/doyensec_logo.svg)
+![Doyensec Research](doyensec_logo.svg)
