@@ -2,11 +2,7 @@
 
 ## Introduction
 
-ZIP and Tar files are used for compression multiple files into a single one, it is a lossless data compression and reduces the size of the file making the file transfer lighter.
-
-Zip path traversal is a security vulnerability that occurs when an application fails to validate the filenames of entries during extraction. This vulnerability allows an attacker to extract files outside of the intended directory, potentially leading to arbitrary file overwrites. This can result in the overwriting of important files, gaining access to sensitive data, or, in some cases, even executing arbitrary code.
-
-The class used in PHP is `ZipArchive` which is a builtin class.
+The class used in PHP to manage Zip archives is `ZipArchive`, which is a builtin class.
 
 ## Unsafe Usages
 

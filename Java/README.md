@@ -2,11 +2,7 @@
 
 ## Introduction
 
-ZIP and Tar files are used for compression multiple files into a single one, it is a lossless data compression and reduces the size of the file making the file transfer lighter.
-
-Zip path traversal is a security vulnerability that occurs when an application fails to validate the filenames of entries during extraction. This vulnerability allows an attacker to extract files outside of the intended directory, potentially leading to arbitrary file overwrites. This can result in the overwriting of important files, gaining access to sensitive data, or, in some cases, even executing arbitrary code.
-
-There are various libraries used for decompression in javascript some of them like `ZipFile`, `ZipInputStream` and `apache TarArchiveInputStream`.
+There are various libraries that can be used for decompression in Java, some of them are `ZipFile`, `ZipInputStream` and `apache TarArchiveInputStream`.
 
 ## Unsafe Usages
 

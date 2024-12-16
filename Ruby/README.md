@@ -2,9 +2,7 @@
 
 ## Introduction
 
-Archives are file formats like ZIP, RAR or TAR, compressing multiple files into a single file to save storage or data transfer.
-
-Decompression attacks exploit the way systems handle the extraction of the files from the archive. The attack occurs when a archive is crafterd to extract files outside of it's intended directory by exploiting path traversal. This vulnerability may lead to serious security issues, as attacker may arbitrary write data in the system.
+The decompression libraries analyzed for Ruby were the `zip` and the `TarReader` gems.
 
 ## Unsafe Usages
 
