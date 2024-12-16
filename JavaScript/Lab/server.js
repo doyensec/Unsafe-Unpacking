@@ -2,8 +2,9 @@ const fs = require('fs');
 const express = require('express');
 const path = require('path');
 const { unsafe_admzip, unsafe_nodezip, unsafe_untar, unsafe_unzip, unsafe_unzipper, safe_admzip, safe_nodezip, safe_untar, safe_unzip, safe_unzipper } = require("./methods");
-const app = express();
 const multer = require('multer');
+
+const app = express();
 const PORT = 3000;
 
 app.use(express.static('templates'));
