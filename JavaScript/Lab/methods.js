@@ -1,7 +1,6 @@
 const fs = require('fs');
 const AdmZip = require('adm-zip');
 const path = require('path');
-const node_unzip = require('node-zip');
 const NodeZip = require('node-zip')
 const tar = require('tar-stream');
 const unzipper = require('unzipper');

@@ -62,6 +62,9 @@ function unsafe_untar1(tarballPath, outputDir) {
       const filePath = path.join(outputDir, header.name);
       // ruleid: tarstream_unsafe_unpacking
       const outStream = fs.createWriteStream(filePath);
+      stream.pipe(outStream);
+      stream.on('end', next);
+      stream.resume();
     });
   
     const tarballStream = fs.createReadStream(tarballPath)
