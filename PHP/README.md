@@ -115,7 +115,7 @@ function unsafe_unzip($file_name, $output) {
 }
 ```
 
-## Unsafe Usages
+## Safe Usages
 
 To prevent path injection, it's essential to sanitize and validate the entry filename or use the `extractTo()` method, which is safe.
 
