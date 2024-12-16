@@ -1,4 +1,4 @@
-# JavaScript Decompression Attack
+# JavaScript Decompression Attacks
 
 | Library    | Has default extract method | User implementation may be vulnerable  | NPM page                                      |
 |------------|----------------------------------|--------------------------------------|--------------------------------------------------|

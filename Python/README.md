@@ -1,4 +1,4 @@
-# Python Decompression Attack
+# Python Decompression Attacks
 
 ## Introduction
 

@@ -1,4 +1,4 @@
-# PHP Decompression Attack
+# PHP Decompression Attacks
 
 ## Introduction
 

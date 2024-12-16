@@ -1,4 +1,4 @@
-# Java Decompression Attack
+# Java Decompression Attacks
 
 ## Introduction
 

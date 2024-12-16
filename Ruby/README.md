@@ -1,4 +1,4 @@
-# Ruby Decompression Attack
+# Ruby Decompression Attacks
 
 ## Introduction
 
