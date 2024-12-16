@@ -26,4 +26,4 @@ def unpack_tar_gz2(file_name, output_dir):
             if filter_func(member):
                 tar.extract(member, path=output_dir)
 
-unpack_tar_gz2("../payloads/payload.tar.gz", "/Users/michael/Doyensec/Research/SemgrepSlip/Python/PoC/")
+unpack_tar_gz2("../payloads/payload.tar.gz", "../src/")
