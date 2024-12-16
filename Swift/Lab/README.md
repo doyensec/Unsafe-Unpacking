@@ -1,6 +1,6 @@
 # Swift Decompression Attack Lab
 
-## 1. [Zip](https://github.com/marmelroy/Zip.git)
+## [Zip](https://github.com/marmelroy/Zip.git)
 
 From `ZipLab` directory install the package with the following command:
 
