@@ -6,7 +6,7 @@ There are various libraries used for decompression in Python, some of them are `
 
 ## [ZipLib](https://docs.python.org/3/library/zipfile.html)
 
-### `ZipFile.extract() - SAFE`
+### `ZipFile.extract()` – Safe
 
 ```py
 method:: ZipFile.extract(member, path=None, pwd=None)
@@ -22,7 +22,7 @@ def _extract_member(self, member, targetpath, pwd):
 
     # [...]
 
-     # interpret absolute pathname as relative, remove drive letter or
+    # interpret absolute pathname as relative, remove drive letter or
     # UNC path, redundant separators, "." and ".." components.
     arcname = os.path.splitdrive(arcname)[1]
     invalid_path_parts = ('', os.path.curdir, os.path.pardir)
@@ -30,7 +30,7 @@ def _extract_member(self, member, targetpath, pwd):
                                 if x not in invalid_path_parts)
 ```
 
-It defines a tuple that contains an empty string, current directory (".") and parent directory (".."). The the code spliths the path into its components using `os.path.sep` ("/") then filters out any component present in `invalid_path_parts`. Preventing possible path injections.
+It defines a tuple that contains an empty string, current directory (`.`) and parent directory (`..`). The the code splits the path into its components using `os.path.sep` (`/`) then filters out any component present in `invalid_path_parts`, preventing possible path injections.
 
 ```py
 def unzip(file_name, output):
@@ -41,7 +41,7 @@ def unzip(file_name, output):
             zf.extract(file, output)
 ```
 
-### `ZipFile.extractall() - SAFE`
+### `ZipFile.extractall()` – Safe
 
 ```py
 method:: ZipFile.extractall(path=None, members=None, pwd=None)
@@ -56,9 +56,9 @@ def unzip(file_name, output):
             zf.extractall(output)
 ```
 
-### `ZipFile + shutil.copyfileobj() - UNSAFE`
+### `ZipFile` + `shutil.copyfileobj()` – Unsafe
 
-When opening a `ZipFile` there are several ways to extract the data not only with the methods included in the library itself. There are lot of developers using `shutil` to extract the contents of the zip with `shutil.copyfileobj()` (actually the builin method uses the same method):
+When opening a `ZipFile` there are several ways to extract the data not only with the methods included in the library itself. There are lots of developers using `shutil` to extract the contents of the zip with `shutil.copyfileobj()` (actually the built-in method uses the same method):
 
 ```py
 def copyfileobj(fsrc, fdst, length=0):
@@ -88,11 +88,11 @@ def unzip(file_name, output):
 
 The function initializes the `ZipFile` object and then it iterates through all its files (the array contains all the filenames of the zip). Then it sets the `output_path` variable with the output directory and the filename. 
 
-Since `os.path.join` does not normalize it allows references to parent directory like ("..") and filename may contain those "..", the `output_path` may be out of the output directory, leading to path injection.
+Since `os.path.join` does not normalize the path, it allows references to parent directories (using `../`) in the filename, therefore the `output_path` may be out of the intended output directory, leading to path traversal.
 
 Then it sets the file descriptor to the file to extract as `source` and the `output_path` as `destination`. Finally the content of `source` is written to `destination`.
 
-The safe way to implement this is to normalize the output path we can use `os.path.normpath()` instead or `os.path.basename(filename)` to prevent path injection:
+The safe way to implement this is to normalize the output path. We can use `os.path.normpath()` instead of `os.path.basename(filename)` to prevent path injections:
 
 `os.path.normpath()`:
 
@@ -123,7 +123,7 @@ def unzip(file_name, output):
                     shutil.copyfileobj(source_file, target_file)
 ```
 
-### `TarFile.extract() - UNSAFE`
+### `TarFile.extract()` – Unsafe
 
 The `extract()` method in Python's `tarfile` module is used to extract a member from the archive to the current directory. This method is unsafe against path traversal since it doesn't remove redundant separators and dots:
 
@@ -155,7 +155,7 @@ def _extract_member(self, tarinfo, targetpath, set_attrs=True,
         self.makefile(tarinfo, targetpath)
 ```
 
-`extract()` method calls `makefile()` that writes the content first parameter to the `targetpath` which is the second parameter:
+The `extract()` method calls `makefile()`, which writes the contents (`tarinfo`) to the specified path (`targetpath`):
 
 ```py
 def makefile(self, tarinfo, targetpath):
@@ -175,7 +175,7 @@ def makefile(self, tarinfo, targetpath):
             copyfileobj(source, target, tarinfo.size, ReadError, bufsize)
 ```
 
-`makefile()` uses `copyfileobj()` to transfer the file data which is a method from `shutil` library (previously mentioned).
+`makefile()` uses `copyfileobj()` to extract the file data, which is a method from the `shutil` library.
 
 ```py
 def untar(file_name, output):
@@ -185,7 +185,7 @@ def untar(file_name, output):
             tf.extract(member) 
 ```
 
-### `TarFile.extractall() - UNSAFE`
+### `TarFile.extractall()` – Unsafe
 
 The `extractall()` method is a convenient way to extract all the contents of a TAR file into a specified directory instead of iterating and extracting files one by one using `extract()`. Since this method is based on the implementation of `extract()` it is also unsafe against path traversal.
 
@@ -196,7 +196,7 @@ def untar(file_name, output):
         tf.extractall(output)
 ```
 
-### `TarFile + shutil.copyfileobj() - UNSAFE`
+### `TarFile + shutil.copyfileobj()` – Unsafe
 
 When opening `TarFile` there are several ways to extract the data not only with the methods included in the library itself. There are lot of developers using `shutil` to extract the contents of the zip with `shutil.copyfileobj()` (actually the builin method uses the same method):
 
@@ -227,11 +227,11 @@ def untar(file_name, output):
 
 The function opens the file using `tarfile.open()` and then it iterates through all its files (members, the array contains all the filenames of the zip). Then it sets the `output_path` variable with the output directory and the filename.
 
-Since `os.path.join` does not normalize it allows references to parent directory like ("..") and filename may contain those "..", the `output_path` may be out of the output directory, leading to path injection.
+Since `os.path.join` does not normalize the path, it allows references to parent directories (using `../`) in the filename, therefore the `output_path` may be out of the intended output directory, leading to path traversal.
 
 Then it sets the file descriptor to the file to extract as `source` and the `output_path` as `dest_file`. Finally the content of `source` is written to `dest_file`.
 
-The safe way to implement this is to normalize the output path we can use `os.path.normpath()` instead or `os.path.basename(filename)` to prevent path injection:
+The safe way to implement this is to normalize the output path. We can use `os.path.normpath()` instead of `os.path.basename(filename)` to prevent path injections:
 
 `os.path.normpath()`:
 
@@ -349,7 +349,7 @@ def _unpack_zipfile(filename, extract_dir):
         zip.close()
 ```
 
-There is a check if the name contains references to the parent directory so it is safe against path injection (at least for zip).
+There is a check to see if the name contains references to the parent directory, so this method is safe against path injections (at least for zip).
 
 `_unpack_tarfile()`:
 
@@ -367,7 +367,7 @@ def _unpack_tarfile(filename, extract_dir, *, filter=None):
         tarobj.close()
 ```
 
-The function calls `extractall()`, as we mentioned `extractall()` method is vulnerable against path injection and consequently `unpack_archive()` is too.
+The function calls `extractall()`, as we mentioned `extractall()` method is vulnerable against path injections and consequently `unpack_archive()` is too.
 
 ```py
 def unpack_zip(file_name, output_dir):

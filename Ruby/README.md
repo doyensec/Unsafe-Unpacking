@@ -12,7 +12,7 @@ The decompression libraries analyzed for Ruby were the `zip` and the `TarReader`
 Zip::File.open(file_name).extract(entry, file_path)
 ```
 
-The `extract()` method in Ruby's `zip` library is used to extract an entry from the archive to the `file_path` dirctory. This method is unsafe since it doesn't remove redundant dots and separators:
+The `extract()` method in Ruby's `zip` library is used to extract an entry from the archive to the `file_path` directory. This method is unsafe since it doesn't remove redundant dots and separators:
 
 ```rb
 # Extracts `entry` to a file at `entry_path`, with `destination_directory`
@@ -158,7 +158,7 @@ unless path.start_with?(File.expand_path(output))
 end
 ```
 
-#### Potencial Issue of `File.join()`
+#### Potential Issue of `File.join()`
 
 If we use `File.join` instead to check the destination path, it may lead to vulnerabilities:
 

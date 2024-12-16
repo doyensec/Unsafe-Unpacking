@@ -8,7 +8,7 @@ There are various libraries that can be used for decompression in Java, some of 
 
 `java.util.zip.ZipInputStream`, `java.util.zip.ZipFile` and `apache TarArchiveInputStream` allow the programmer to implement the extraction themselves using `FileOutputStream` or `Files.copy`.
 
-The programmer can iterate through the entries and use the previously mentioned methods to extract the content of the entries. This makes the programmer responsible for sanitizing and validating all the filenames of the entries, preventing path injection.
+The programmer can iterate through the entries and use the previously mentioned methods to extract the content of the entries. This makes the programmer responsible for sanitizing and validating all the filenames of the entries to prevent path injection.
 
 The following code snippets demonstrate the **VULNERABLE** usage of each library:
 
@@ -111,7 +111,7 @@ public static void safe_unzip(String file_name,String output){
 
 ### [ZipUtil](https://javadoc.io/doc/org.zeroturnaround/zt-zip/1.6/org/zeroturnaround/zip/ZipUtil.html)
 
-`org.zeroturnaround.zip.ZipUtil` class from zeroturnaround provides a simple and safe implementation to extract files from a ZIP. The following method automatically handles the extraction process and prevents any files from being written outside the output directory, even if the archive contains potentially dangerous file paths:
+The `org.zeroturnaround.zip.ZipUtil` class from `zeroturnaround` provides a simple and safe implementation to extract files from a ZIP. The following method automatically handles the extraction process and prevents any files from being written outside the output directory, even if the archive contains potentially dangerous file paths:
 
 ```java
 public static void safe_unzip(String file_name,String output){
@@ -150,7 +150,7 @@ public static void safe_unzip(String file_name, String output) {
 
 #### Path Validation
 
-Alternativeky, before writing the content of the entry to the write path, ensure that the write path is within the destination path using `startsWith()`:
+Alternatively, before writing the content of the entry to the write path, ensure that the write path is within the destination path using `startsWith()`:
 
 ```java
 public static void unsafe_unzip6(String file_name, String output) {

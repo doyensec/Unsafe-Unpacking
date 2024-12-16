@@ -20,7 +20,7 @@ There are many libraries used for decompressing archives in JavaScript, such as 
 
 The following libraries allow the programmer to implement the extraction themselves using `fs.createWriteStream()`, `fs.writeFile()`, `fs.writeFileSync()`, `fs.appendFile()`, or `fs.appendFileSync()`.
 
-The programmer can iterate through the entries and use the previously mentioned methods to extract the content of the entries. This makes the programmer responsible for sanitizing and validating all the filenames of the entries, preventing path injection.
+The programmer can iterate through the entries and use the previously mentioned methods to extract the content of the entries. This makes the programmer responsible for sanitizing and validating all the filenames of the entries to prevent path injection.
 
 The following code snippets demonstrate the **VULNERABLE** usage of each library:
 
