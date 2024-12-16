@@ -29,7 +29,7 @@ function unsafe_unzip_1($file_name, $output) {
 function unsafe_unzip2($file_name, $output) {
     # bad
     $zip = new ZipArchive;
-    if ($zip->open($path) === true) {
+    if ($zip->open($file_name) === true) {
         for($i = 0; $i < $zip->numFiles; $i++) {
             $entry = $zip->getNameIndex($i);
             # ruleid: ziparchive_unsafe_unpacking
@@ -42,11 +42,12 @@ function unsafe_unzip2($file_name, $output) {
 function safe_zip($file_name, $output) {
     # good
     $zip = new ZipArchive;
-    if ($zip->open($path) === true) {
+    if ($zip->open($file_name) === true) {
         for($i = 0; $i < $zip->numFiles; $i++) {
             # basename
-            $entry = basename($zip->getNameIndex($i));
-            copy("zip://".$file_name."#".$filename, $output."/".$entry);
+            $entry = $zip->getNameIndex($i);
+            $name = basename($entry);
+            copy("zip://".$file_name."#".$entry, $output."/".$name);
         }                   
         $zip->close();                   
     }
@@ -156,7 +157,7 @@ function unsafe_unzip8($file_name, $output) {
         for($i = 0; $i < $zip->numFiles; $i++) {
             $filename = $zip->getNameIndex($i);
             # ruleid: ziparchive_unsafe_unpacking
-            file_put_contents($filename, $output."/".$this->getFromIndex($i));
+            file_put_contents($filename, $output."/".$zip->getFromIndex($i));
         }                   
         $zip->close();                   
     }
